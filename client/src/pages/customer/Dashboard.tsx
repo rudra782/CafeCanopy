@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Coffee, Utensils, ShoppingCart } from 'lucide-react';
 import { useAuthStore } from '../../store';
 import { customerPortalAPI, productsAPI, categoriesAPI } from '../../lib/api';
 import { useNavigate } from 'react-router-dom';
@@ -116,7 +117,7 @@ export default function CustomerDashboard() {
         notes: notes || undefined,
       });
 
-      toast.success('Order placed! Waiting for cashier confirmation ☕');
+      toast.success('Order placed! Waiting for cashier confirmation');
       clearCart();
       setNotes('');
       // Reload dashboard/orders history
@@ -169,7 +170,7 @@ export default function CustomerDashboard() {
         justifyContent: 'space-between'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontSize: 24 }}>☕</span>
+          <span style={{ display: 'flex' }}><Coffee size={24} style={{ color: 'var(--brown-600)' }} /></span>
           <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700 }}>CafeCanopy Portal</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -271,7 +272,7 @@ export default function CustomerDashboard() {
                         {p.image_url ? (
                           <img src={p.image_url} alt={p.name} style={{ width: '100%', height: 120, objectFit: 'cover', borderRadius: 10, marginBottom: 12 }} />
                         ) : (
-                          <div style={{ width: '100%', height: 120, background: 'var(--cream-100)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32, marginBottom: 12 }}>🍽️</div>
+                          <div style={{ width: '100%', height: 120, background: 'var(--cream-100)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}><Utensils size={32} style={{ color: 'var(--brown-400)' }} /></div>
                         )}
                         <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--brown-800)', marginBottom: 4 }}>{p.name}</h4>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
@@ -376,7 +377,7 @@ export default function CustomerDashboard() {
 
             {getCartItemsCount() === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)' }}>
-                <span style={{ fontSize: 32 }}>🛒</span>
+                <ShoppingCart size={32} style={{ color: 'var(--brown-400)' }} />
                 <p style={{ fontSize: 13, marginTop: 8 }}>Cart is empty. Select items on the left to add.</p>
               </div>
             ) : (

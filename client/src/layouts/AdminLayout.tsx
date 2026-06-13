@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
+import { LayoutDashboard, ShoppingBag, Tag, Grid, Users, User, CreditCard, Ticket, Clock, TrendingUp, Settings, LogOut, Monitor, ChefHat, Coffee } from 'lucide-react';
 import { NavLink, useNavigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../store';
 import { authAPI } from '../lib/api';
 import toast from 'react-hot-toast';
 
 const NAV_ITEMS = [
-  { path: '/admin/dashboard', icon: '📊', label: 'Dashboard' },
-  { path: '/admin/products', icon: '🍔', label: 'Products' },
-  { path: '/admin/categories', icon: '🏷️', label: 'Categories' },
-  { path: '/admin/floors', icon: '🏢', label: 'Floors' },
-  { path: '/admin/tables', icon: '🪑', label: 'Tables' },
-  { path: '/admin/customers', icon: '👥', label: 'Customers' },
-  { path: '/admin/employees', icon: '👤', label: 'Employees' },
-  { path: '/admin/payment-methods', icon: '💳', label: 'Payment Methods' },
-  { path: '/admin/coupons', icon: '🎫', label: 'Coupons' },
-  { path: '/admin/promotions', icon: '🎯', label: 'Promotions' },
-  { path: '/admin/sessions', icon: '⏰', label: 'Sessions' },
-  { path: '/admin/reports', icon: '📈', label: 'Reports' },
-  { path: '/admin/settings', icon: '⚙️', label: 'Settings' },
+  { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { path: '/admin/products', icon: ShoppingBag, label: 'Products' },
+  { path: '/admin/categories', icon: Tag, label: 'Categories' },
+  { path: '/admin/tables', icon: Grid, label: 'Tables' },
+  { path: '/admin/customers', icon: Users, label: 'Customers' },
+  { path: '/admin/employees', icon: User, label: 'Employees' },
+  { path: '/admin/payment-methods', icon: CreditCard, label: 'Payment Methods' },
+  { path: '/admin/coupons', icon: Ticket, label: 'Coupons' },
+  { path: '/admin/sessions', icon: Clock, label: 'Sessions' },
+  { path: '/admin/reports', icon: TrendingUp, label: 'Reports' },
+  { path: '/admin/settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function AdminLayout() {
@@ -39,7 +38,7 @@ export default function AdminLayout() {
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <div className="brand">
-            <div className="brand-icon">☕</div>
+            <div className="brand-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Coffee size={20} style={{ color: 'white' }} /></div>
             <div>
               <div className="brand-name">CafeCanopy</div>
               <div className="brand-tagline">POS System</div>
@@ -62,26 +61,30 @@ export default function AdminLayout() {
               }
               return true;
             });
-            return filteredItems.map(item => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                onClick={() => setSidebarOpen(false)}
-              >
-                <span style={{ fontSize: 16 }}>{item.icon}</span>
-                {item.label}
-              </NavLink>
-            ));
+            return filteredItems.map(item => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                  onClick={() => setSidebarOpen(false)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 10 }}
+                >
+                  <Icon size={18} />
+                  {item.label}
+                </NavLink>
+              );
+            });
           })()}
           <div className="nav-section-label" style={{ marginTop: 8 }}>Quick Access</div>
           <NavLink to="/pos" className="nav-item" target="_blank">
-            <span style={{ fontSize: 16 }}>🖥️</span>
+            <Monitor size={18} />
             POS Terminal
             <span style={{ marginLeft: 'auto', fontSize: 10, opacity: 0.6 }}>↗</span>
           </NavLink>
           <NavLink to="/kds" className="nav-item" target="_blank">
-            <span style={{ fontSize: 16 }}>🍳</span>
+            <ChefHat size={18} />
             Kitchen Display
             <span style={{ marginLeft: 'auto', fontSize: 10, opacity: 0.6 }}>↗</span>
           </NavLink>
@@ -100,7 +103,7 @@ export default function AdminLayout() {
               data-tooltip="Logout"
               style={{ color: 'rgba(255,255,255,0.5)', marginLeft: 'auto' }}
             >
-              ⏻
+              <LogOut size={16} />
             </button>
           </div>
         </div>

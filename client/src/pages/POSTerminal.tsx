@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import { BarChart3, Coffee } from 'lucide-react';
+import { BarChart3, Coffee, ChefHat, Check, Search, Utensils, User, Trash2, ShoppingCart, Ticket, CreditCard, Smartphone, Users, AlertTriangle } from 'lucide-react';
 
 const formatCurrency = (n: number) => `₹${Number(n || 0).toFixed(2)}`;
 
@@ -196,7 +196,7 @@ export default function POSTerminal() {
         });
       }
       await ordersAPI.sendToKitchen(orderId!);
-      toast.success('Order sent to kitchen! 🍳');
+      toast.success('Order sent to kitchen!');
     } catch (err: any) { toast.error(err.response?.data?.message || 'Failed'); }
   };
 
@@ -236,7 +236,7 @@ export default function POSTerminal() {
         transaction_reference: transactionRef || undefined,
       }]);
 
-      toast.success('Payment processed! ✅');
+      toast.success('Payment processed!');
       store.clearCart();
       setAmountReceived('');
       setTransactionRef('');
@@ -246,12 +246,13 @@ export default function POSTerminal() {
 
   const closeSession = async () => {
     if (!store.currentSession) return;
+    if (!window.confirm('Are you sure you want to end and close your active shift session?')) return;
     try {
-      const { data } = await sessionsAPI.close(store.currentSession.id, { closing_amount: parseFloat(closingAmount) || 0 });
+      const { data } = await sessionsAPI.close(store.currentSession.id, {});
       setSessionStats(data.data.stats);
       store.setSession(null);
       setShowSessionClose(false);
-      toast.success('Session closed');
+      toast.success('Session closed successfully');
     } catch (err: any) { toast.error(err.response?.data?.message || 'Failed to close session'); }
   };
 
@@ -356,22 +357,22 @@ export default function POSTerminal() {
       <div className="pos-products">
         {/* POS Topbar */}
         <div className="pos-topbar">
-          <span className="pos-brand">☕ CafeCanopy POS</span>
+          <span className="pos-brand">CafeCanopy POS</span>
           {store.currentSession && <span className="pos-session-badge">● Session Active</span>}
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
             <button className="btn btn-sm" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none' }} onClick={() => setShowOrders(!showOrders)}>📋 Orders</button>
-            <button className="btn btn-sm" style={{ background: 'rgba(217,79,79,0.3)', color: '#ff9999', border: 'none' }} onClick={() => setShowSessionClose(true)}>✕ Close Session</button>
+            <button className="btn btn-sm" style={{ background: 'rgba(217,79,79,0.3)', color: '#ff9999', border: 'none' }} onClick={closeSession}>✕ Close Session</button>
           </div>
         </div>
 
         {/* Search */}
         <div style={{ padding: '12px 16px', background: 'var(--bg-card)', borderBottom: '1px solid var(--border)', display: 'flex', gap: 8 }}>
           <div className="search-bar" style={{ flex: 1 }}>
-            <span className="search-icon">🔍</span>
+            <span className="search-icon" style={{ display: 'flex', alignItems: 'center' }}><Search size={16} /></span>
             <input placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: '100%' }} />
           </div>
           <button className="btn btn-outline btn-sm" onClick={() => setShowTableModal(true)}>
-            {store.selectedTable ? `🪑 ${store.selectedTable.table_number}` : '+ Table'}
+            {store.selectedTable ? `Table ${store.selectedTable.table_number}` : '+ Table'}
           </button>
         </div>
 
@@ -399,7 +400,7 @@ export default function POSTerminal() {
                   {p.image_url ? (
                     <img className="product-img" src={p.image_url} alt={p.name} />
                   ) : (
-                    <div className="product-img-placeholder">🍽️</div>
+                    <div className="product-img-placeholder" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Utensils size={32} style={{ color: 'var(--brown-400)' }} /></div>
                   )}
                   {inCart && <div className="in-cart-badge">{inCart.quantity}</div>}
                   <div className="product-info">
@@ -418,21 +419,21 @@ export default function POSTerminal() {
       <div className="pos-cart">
         <div className="cart-header">
           <div className="cart-table-info">
-            {store.selectedTable && <span className="cart-table-tag">🪑 Table {store.selectedTable.table_number}</span>}
+            {store.selectedTable && <span className="cart-table-tag" style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Utensils size={13} /> Table {store.selectedTable.table_number}</span>}
             <span style={{ fontSize: 13, fontWeight: 600 }}>Current Order</span>
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             <button className="btn btn-secondary btn-sm" onClick={() => setShowCustomerModal(true)} style={{ fontSize: 12 }}>
-              {store.selectedCustomer ? `👤 ${store.selectedCustomer.name.split(' ')[0]}` : '＋ Customer'}
+              {store.selectedCustomer ? `${store.selectedCustomer.name.split(' ')[0]}` : '＋ Customer'}
             </button>
-            {store.cartItems.length > 0 && <button className="btn btn-danger btn-sm" onClick={store.clearCart} style={{ fontSize: 12 }}>🗑️ Clear</button>}
+            {store.cartItems.length > 0 && <button className="btn btn-danger btn-sm" onClick={store.clearCart} style={{ fontSize: 12 }}>Clear</button>}
           </div>
         </div>
 
         <div className="cart-items">
           {store.cartItems.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>
-              <div style={{ fontSize: 40, marginBottom: 8 }}>🛒</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}><ShoppingCart size={40} style={{ color: 'var(--brown-400)' }} /></div>
               <div style={{ fontSize: 14 }}>Tap products to add to cart</div>
             </div>
           ) : (
@@ -459,7 +460,7 @@ export default function POSTerminal() {
           <div className="summary-row"><span>Tax</span><span>{formatCurrency(cartTax)}</span></div>
           {couponDiscount > 0 && (
             <div className="summary-row discount">
-              <span>🎫 Coupon ({store.appliedCoupon?.code})</span>
+              <span>Coupon ({store.appliedCoupon?.code})</span>
               <span>−{formatCurrency(couponDiscount)}</span>
             </div>
           )}
@@ -469,7 +470,7 @@ export default function POSTerminal() {
               {store.appliedCoupon ? '🎫 Applied' : '🎫 Coupon'}
             </button>
             <button className="btn btn-outline btn-sm" onClick={sendToKitchen} style={{ flex: 1 }} disabled={!store.cartItems.length}>
-              🍳 Kitchen
+              Kitchen
             </button>
           </div>
         </div>
@@ -487,7 +488,7 @@ export default function POSTerminal() {
           {paymentMethods.map(pm => (
             <button key={pm.id} className={`payment-method-btn ${activePayMethod === pm.id ? 'active' : ''}`} onClick={() => setActivePayMethod(pm.id)}>
               <div className="payment-icon">
-                {pm.type === 'cash' ? '💵' : pm.type === 'card' ? '💳' : '📱'}
+                {pm.type === 'cash' ? <CreditCard size={18} /> : pm.type === 'card' ? <CreditCard size={18} /> : <Smartphone size={18} />}
               </div>
               <div>
                 <div style={{ fontWeight: 600, fontSize: 14 }}>{pm.name}</div>
@@ -537,7 +538,7 @@ export default function POSTerminal() {
             disabled={!store.cartItems.length || processingPayment}
             style={{ fontSize: 16, fontWeight: 800 }}
           >
-            {processingPayment ? <span className="spinner spinner-sm" style={{ borderTopColor: 'white' }} /> : '💳'}
+            {processingPayment ? <span className="spinner spinner-sm" style={{ borderTopColor: 'white' }} /> : null}
             {processingPayment ? 'Processing...' : `Pay ${formatCurrency(cartTotal)}`}
           </button>
         </div>
@@ -658,7 +659,7 @@ export default function POSTerminal() {
                       }
                     }}>
                     <div className="table-num">{t.table_number}</div>
-                    <div className="table-seats">👥 {t.seats}</div>
+                    <div className="table-seats">Seats {t.seats}</div>
                     <div style={{ fontSize: 10, textTransform: 'capitalize', marginTop: 2, opacity: 0.8 }}>
                       {t.status || 'available'}
                     </div>
@@ -676,27 +677,6 @@ export default function POSTerminal() {
         </div>
       )}
 
-      {/* Close Session Modal */}
-      {showSessionClose && (
-        <div className="modal-overlay">
-          <div className="modal modal-sm">
-            <div className="modal-header"><div className="modal-title">Close Session</div><button className="modal-close" onClick={() => setShowSessionClose(false)}>✕</button></div>
-            <div className="modal-body">
-              <div className="form-group">
-                <label className="form-label">Closing Cash Amount (₹)</label>
-                <input className="form-control" type="number" min="0" value={closingAmount} onChange={e => setClosingAmount(e.target.value)} placeholder="Count cash in drawer" style={{ textAlign: 'center', fontSize: 18, fontWeight: 700 }} />
-              </div>
-              <div style={{ background: 'var(--warning-bg)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: 'var(--warning)' }}>
-                ⚠️ This will end your POS session. All draft orders will remain open.
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={() => setShowSessionClose(false)}>Cancel</button>
-              <button className="btn btn-danger" onClick={closeSession}>Close Session</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

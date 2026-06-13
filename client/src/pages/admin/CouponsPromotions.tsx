@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Edit2, Trash2, Tag } from 'lucide-react';
 import { couponsAPI, promotionsAPI, productsAPI, categoriesAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 
@@ -50,8 +51,8 @@ function CouponsTab() {
                   <td>{c.used_count}{c.usage_limit ? `/${c.usage_limit}` : ''}</td>
                   <td><span className={`badge ${c.active ? 'badge-success' : 'badge-gray'}`}>{c.active ? 'Active' : 'Inactive'}</span></td>
                   <td><div className="table-actions">
-                    <button className="btn btn-outline btn-sm" onClick={() => { setEdit({ ...c }); setShowModal(true); }}>✏️</button>
-                    <button className="btn btn-danger btn-sm btn-icon" onClick={async () => { if (confirm('Delete?')) { await couponsAPI.delete(c.id); toast.success('Deleted'); load(); } }}>🗑️</button>
+                    <button className="btn btn-outline btn-sm" onClick={() => { setEdit({ ...c }); setShowModal(true); }}>Edit</button>
+                    <button className="btn btn-danger btn-sm btn-icon" onClick={async () => { if (confirm('Delete?')) { await couponsAPI.delete(c.id); toast.success('Deleted'); load(); } }}></button>
                   </div></td>
                 </tr>
               ))}
@@ -146,8 +147,8 @@ function PromotionsTab() {
               </div>
             </div>
             <div className="card-footer" style={{ display: 'flex', gap: 6 }}>
-              <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => { setEdit({ ...p }); setShowModal(true); }}>✏️ Edit</button>
-              <button className="btn btn-danger btn-sm btn-icon" onClick={async () => { if (confirm('Delete?')) { await promotionsAPI.delete(p.id); toast.success('Deleted'); load(); } }}>🗑️</button>
+              <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => { setEdit({ ...p }); setShowModal(true); }}>Edit</button>
+              <button className="btn btn-danger btn-sm btn-icon" onClick={async () => { if (confirm('Delete?')) { await promotionsAPI.delete(p.id); toast.success('Deleted'); load(); } }}></button>
             </div>
           </div>
         ))}

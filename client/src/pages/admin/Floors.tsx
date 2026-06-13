@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Edit2, Trash2, Tag } from 'lucide-react';
 import { floorsAPI, tablesAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 
@@ -93,11 +94,11 @@ export default function FloorsPage() {
                   <button
                     onClick={() => { setEditFloor(f); setShowFloorModal(true); }}
                     style={{ padding: '9px 8px', background: activeFloor === f.id ? 'var(--brown-500)' : 'var(--cream-200)', border: '1.5px solid var(--border-dark)', borderLeft: 'none', cursor: 'pointer', color: activeFloor === f.id ? 'white' : 'var(--text-secondary)', fontSize: 13 }}
-                  >✏️</button>
+                  >Edit</button>
                   <button
                     onClick={() => deleteFloor(f.id)}
                     style={{ padding: '9px 8px', background: activeFloor === f.id ? 'var(--brown-500)' : 'var(--cream-200)', border: '1.5px solid var(--border-dark)', borderLeft: 'none', borderRadius: '0 10px 10px 0', cursor: 'pointer', color: 'var(--error)', fontSize: 13 }}
-                  >🗑️</button>
+                  ></button>
                 </div>
               ))}
               {floors.length === 0 && <div className="empty-state" style={{ width: '100%' }}><div className="empty-icon">🏢</div><h3>No floors yet</h3><button className="btn btn-primary" onClick={() => { setEditFloor({}); setShowFloorModal(true); }}>＋ Add First Floor</button></div>}

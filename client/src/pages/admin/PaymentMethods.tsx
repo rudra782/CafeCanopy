@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Edit2, Trash2, Tag } from 'lucide-react';
 import { paymentMethodsAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 
@@ -60,8 +61,8 @@ export default function PaymentMethodsPage() {
                 <span className={`badge ${m.active ? 'badge-success' : 'badge-gray'}`}>{m.active ? 'Active' : 'Off'}</span>
               </div>
               <div className="card-footer" style={{ display: 'flex', gap: 6 }}>
-                <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => { setEdit({ ...m }); setShowModal(true); }}>✏️ Edit</button>
-                <button className="btn btn-danger btn-sm btn-icon" onClick={async () => { if (confirm('Delete?')) { await paymentMethodsAPI.delete(m.id); toast.success('Deleted'); load(); } }}>🗑️</button>
+                <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => { setEdit({ ...m }); setShowModal(true); }}>Edit</button>
+                <button className="btn btn-danger btn-sm btn-icon" onClick={async () => { if (confirm('Delete?')) { await paymentMethodsAPI.delete(m.id); toast.success('Deleted'); load(); } }}></button>
               </div>
             </div>
           ))}

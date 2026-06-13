@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Edit2, Trash2, Tag } from 'lucide-react';
 import { customersAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 
@@ -82,7 +83,7 @@ export default function CustomersPage() {
                     </td>
                     <td>
                       <div className="table-actions">
-                        <button className="btn btn-outline btn-sm" onClick={() => { setEdit({ ...c }); setShowModal(true); }}>✏️ Edit</button>
+                        <button className="btn btn-outline btn-sm" onClick={() => { setEdit({ ...c }); setShowModal(true); }}>Edit</button>
                         <button className="btn btn-secondary btn-sm" onClick={() => loadHistory(c)}>📋 History</button>
                       </div>
                     </td>

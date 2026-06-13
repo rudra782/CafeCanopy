@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Coffee, Sparkles, Star, Gift, ClipboardList } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../store';
 import { authAPI } from '../lib/api';
@@ -30,7 +31,7 @@ export default function RegisterPage() {
       const { data } = await authAPI.register({ name: form.name, email: form.email, password: form.password, role });
       const { user, accessToken, refreshToken } = data.data;
       setAuth(user, accessToken, refreshToken);
-      toast.success('Account created! Welcome to CafeCanopy ☕');
+      toast.success('Account created! Welcome to CafeCanopy');
       
       if (user.role === 'kitchen') {
         navigate('/kds');
@@ -50,27 +51,30 @@ export default function RegisterPage() {
     <div className="auth-layout">
       <div className="auth-left">
         <div style={{ maxWidth: 440 }}>
-          <div style={{ fontSize: 64, marginBottom: 24 }}>✨</div>
+          <div style={{ display: 'flex', marginBottom: 24 }}><Sparkles size={64} style={{ color: 'var(--brown-600)' }} /></div>
           <h1 className="auth-hero-title">Join the<br />CafeCanopy<br />Community</h1>
           <p className="auth-hero-sub">Get started with our state-of-the-art cafe POS ecosystem.</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 40 }}>
             {[
-              { icon: '⭐', text: 'Earn loyalty points and manage staff' },
-              { icon: '🎁', text: 'Exclusive system capabilities' },
-              { icon: '📋', text: 'Real-time sync between POS & KDS' },
-            ].map(f => (
-              <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(255,255,255,0.85)', fontSize: 15 }}>
-                <span style={{ fontSize: 20 }}>{f.icon}</span>
-                <span>{f.text}</span>
-              </div>
-            ))}
+              { icon: Star, text: 'Earn loyalty points and manage staff' },
+              { icon: Gift, text: 'Exclusive system capabilities' },
+              { icon: ClipboardList, text: 'Real-time sync between POS & KDS' },
+            ].map(f => {
+              const Icon = f.icon;
+              return (
+                <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(255,255,255,0.85)', fontSize: 15 }}>
+                  <Icon size={20} />
+                  <span>{f.text}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
       <div className="auth-right">
         <div className="auth-form-wrap">
           <div className="auth-logo">
-            <div className="auth-logo-icon">☕</div>
+            <div className="auth-logo-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Coffee size={18} style={{ color: 'white' }} /></div>
             <span className="auth-logo-name">CafeCanopy</span>
           </div>
           <h2 className="auth-title">Create account</h2>

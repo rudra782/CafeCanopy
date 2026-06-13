@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Edit2, Trash2, Tag } from 'lucide-react';
 import { employeesAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 
@@ -86,9 +87,9 @@ export default function EmployeesPage() {
                     <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{e.last_login ? new Date(e.last_login).toLocaleDateString() : 'Never'}</td>
                     <td>
                       <div className="table-actions">
-                        <button className="btn btn-outline btn-sm" onClick={() => { setEdit({ ...e }); setShowModal(true); }}>✏️ Edit</button>
+                        <button className="btn btn-outline btn-sm" onClick={() => { setEdit({ ...e }); setShowModal(true); }}>Edit</button>
                         <button className="btn btn-secondary btn-sm" onClick={() => { setResetId(e.id); setShowPasswordModal(true); }}>🔑 Reset</button>
-                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => handleDelete(e.id)}>🗑️</button>
+                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => handleDelete(e.id)}></button>
                       </div>
                     </td>
                   </tr>

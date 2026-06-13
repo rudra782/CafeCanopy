@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Edit2, Trash2, Tag } from 'lucide-react';
 import { categoriesAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 
@@ -61,12 +62,12 @@ export default function CategoriesPage() {
                   </div>
                 </div>
                 <div className="card-footer" style={{ display: 'flex', gap: 6 }}>
-                  <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => openEdit(c)}>✏️ Edit</button>
-                  <button className="btn btn-danger btn-sm btn-icon" onClick={() => handleDelete(c.id)}>🗑️</button>
+                  <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => openEdit(c)}>Edit</button>
+                  <button className="btn btn-danger btn-sm btn-icon" onClick={() => handleDelete(c.id)}></button>
                 </div>
               </div>
             ))}
-            {cats.length === 0 && <div className="empty-state" style={{ gridColumn: '1/-1' }}><div className="empty-icon">🏷️</div><h3>No categories yet</h3><button className="btn btn-primary" onClick={openCreate}>＋ Create First Category</button></div>}
+            {cats.length === 0 && <div className="empty-state" style={{ gridColumn: '1/-1' }}><div className="empty-icon"></div><h3>No categories yet</h3><button className="btn btn-primary" onClick={openCreate}>＋ Create First Category</button></div>}
           </div>
         }
       </div>

@@ -82,42 +82,52 @@ export const getOpenSession = async (req: AuthRequest, res: Response) => {
 
 export const closeSession = async (req: AuthRequest, res: Response) => {
   try {
-    const { closing_amount, notes } = req.body;
+    const { notes } = req.body;
     const sessionId = req.params.id;
 
-    // Get session stats
+    // Get session stats first, including opening_amount
     const stats = await query(
       `SELECT 
-        COUNT(DISTINCT o.id)::int as order_count,
-        COALESCE(SUM(CASE WHEN o.status = 'paid' THEN o.total ELSE 0 END), 0) as total_revenue,
-        COALESCE(SUM(CASE WHEN o.status = 'paid' THEN o.discount_amount ELSE 0 END), 0) as total_discounts,
-        json_object_agg(COALESCE(pm.name, 'Unknown'), COALESCE(pay_sums.amount, 0)) as payment_breakdown
-       FROM sessions s
-       LEFT JOIN orders o ON o.session_id = s.id
-       LEFT JOIN (
-         SELECT p.order_id, pm.name, SUM(p.amount) as amount
-         FROM payments p JOIN payment_methods pm ON p.payment_method_id = pm.id
-         WHERE p.status = 'completed' GROUP BY p.order_id, pm.name
-       ) pay_sums ON pay_sums.order_id = o.id
-       LEFT JOIN payment_methods pm ON true
-       WHERE s.id = $1 GROUP BY s.id`,
+        s.opening_amount,
+        (SELECT COUNT(*)::int FROM orders WHERE session_id = $1 AND status = 'paid') as order_count,
+        (SELECT COALESCE(SUM(total), 0) FROM orders WHERE session_id = $1 AND status = 'paid') as total_revenue,
+        (SELECT COALESCE(SUM(discount_amount), 0) FROM orders WHERE session_id = $1 AND status = 'paid') as total_discounts,
+        (
+          SELECT json_object_agg(name, amount)
+          FROM (
+            SELECT pm.name, COALESCE(SUM(CASE WHEN o.session_id = $1 AND p.status = 'completed' THEN p.amount ELSE 0 END), 0) as amount
+            FROM payment_methods pm
+            LEFT JOIN payments p ON p.payment_method_id = pm.id
+            LEFT JOIN orders o ON p.order_id = o.id
+            GROUP BY pm.id, pm.name
+          ) pb
+        ) as payment_breakdown
+       FROM sessions s WHERE s.id = $1`,
       [sessionId]
     );
+
+    const statsData = stats.rows[0] || { opening_amount: 0, order_count: 0, total_revenue: 0, total_discounts: 0, payment_breakdown: {} };
+    const openingAmount = Number(statsData.opening_amount || 0);
+    const totalRevenue = Number(statsData.total_revenue || 0);
+    
+    // Closing cash = opening cash + total paid billing revenue
+    const calculatedClosingAmount = openingAmount + totalRevenue;
 
     const result = await query(
       `UPDATE sessions SET status = 'closed', closed_at = NOW(), closing_amount = $1, notes = $2
        WHERE id = $3 AND opened_by = $4 RETURNING *`,
-      [closing_amount, notes, sessionId, req.user!.id]
+      [calculatedClosingAmount, notes || '', sessionId, req.user!.id]
     );
 
     if (!result.rows[0]) return res.status(404).json({ success: false, message: 'Session not found' });
 
     return res.json({
       success: true,
-      data: { ...result.rows[0], stats: stats.rows[0] },
+      data: { ...result.rows[0], stats: statsData },
       message: 'Session closed'
     });
   } catch (error) {
+    console.error('[CLOSE_SESSION]', error);
     return res.status(500).json({ success: false, message: 'Failed to close session' });
   }
 };
@@ -127,12 +137,11 @@ export const getSessions = async (req: Request, res: Response) => {
     const { page = 1, limit = 20 } = req.query;
     const offset = (Number(page) - 1) * Number(limit);
     const result = await query(
-      `SELECT s.*, u.name as opened_by_name,
-        COUNT(o.id)::int as order_count,
-        COALESCE(SUM(CASE WHEN o.status = 'paid' THEN o.total ELSE 0 END), 0) as revenue
+      `SELECT s.*, u.name as employee_name,
+        (SELECT COUNT(*)::int FROM orders WHERE session_id = s.id AND status = 'paid') as order_count,
+        COALESCE(s.closing_amount - s.opening_amount, (SELECT COALESCE(SUM(total), 0) FROM orders WHERE session_id = s.id AND status = 'paid')) as total_revenue
        FROM sessions s JOIN users u ON s.opened_by = u.id
-       LEFT JOIN orders o ON o.session_id = s.id
-       GROUP BY s.id, u.name ORDER BY s.opened_at DESC LIMIT $1 OFFSET $2`,
+       ORDER BY s.opened_at DESC LIMIT $1 OFFSET $2`,
       [Number(limit), offset]
     );
     return res.json({ success: true, data: result.rows });
@@ -450,8 +459,18 @@ export const processPayment = async (req: AuthRequest, res: Response) => {
       );
     }
 
-    // Mark order as paid
-    await query(`UPDATE orders SET status = 'paid', employee_id = $2, updated_at = NOW() WHERE id = $1`, [id, req.user!.id]);
+    // Fetch employee's active session
+    const activeSession = await query(
+      `SELECT id FROM sessions WHERE opened_by = $1 AND status = 'open'`,
+      [req.user!.id]
+    );
+    const sessionId = activeSession.rows[0]?.id || null;
+
+    // Mark order as paid and bind to active session
+    await query(
+      `UPDATE orders SET status = 'paid', employee_id = $2, session_id = $3, updated_at = NOW() WHERE id = $1`,
+      [id, req.user!.id, sessionId]
+    );
 
     // Update table
     if (order.rows[0].table_id) {

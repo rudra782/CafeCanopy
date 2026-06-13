@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Coffee } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store';
 import { authAPI } from '../lib/api';
@@ -30,7 +31,7 @@ export default function LoginPage() {
     <div className="auth-layout">
       <div className="auth-left">
         <div style={{ maxWidth: 440 }}>
-          <div style={{ fontSize: 64, marginBottom: 24 }}>☕</div>
+          <div style={{ display: 'flex', marginBottom: 24 }}><Coffee size={64} style={{ color: 'var(--brown-600)' }} /></div>
           <h1 className="auth-hero-title">Your Complete<br />Cafe Management<br />System</h1>
           <p className="auth-hero-sub">
             Streamline your operations with our all-in-one POS, kitchen display, and analytics platform.
@@ -52,7 +53,7 @@ export default function LoginPage() {
       <div className="auth-right">
         <div className="auth-form-wrap">
           <div className="auth-logo">
-            <div className="auth-logo-icon">☕</div>
+            <div className="auth-logo-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Coffee size={18} style={{ color: 'white' }} /></div>
             <span className="auth-logo-name">CafeCanopy</span>
           </div>
           <h2 className="auth-title">Sign in</h2>

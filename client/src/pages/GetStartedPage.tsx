@@ -1,4 +1,5 @@
 import React from 'react';
+import { Coffee, Sparkles, Crown, Monitor, ChefHat, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store';
 import { authAPI } from '../lib/api';
@@ -84,7 +85,7 @@ export default function GetStartedPage() {
             fontSize: 22,
             color: 'white',
             boxShadow: '0 4px 12px rgba(138, 99, 64, 0.2)'
-          }}>☕</div>
+          }}><Coffee size={22} style={{ color: 'white' }} /></div>
           <div>
             <span style={{
               fontFamily: "'Playfair Display', serif",
@@ -130,7 +131,7 @@ export default function GetStartedPage() {
             marginBottom: 24,
             boxShadow: 'var(--shadow-xs)'
           }}>
-            <span>✨</span> Intelligent Restaurant & Cafe Operations
+            <span><Sparkles size={14} style={{ color: 'var(--brown-700)' }} /></span> Intelligent Restaurant & Cafe Operations
           </div>
           <h1 style={{
             fontFamily: "'Playfair Display', serif",
@@ -177,7 +178,7 @@ export default function GetStartedPage() {
             boxShadow: 'var(--shadow-md)',
             alignItems: 'stretch'
           }}>
-            <div style={{ fontSize: 36, marginBottom: 16 }}>👑</div>
+            <div style={{ display: 'flex', marginBottom: 16 }}><Crown size={36} style={{ color: 'var(--brown-600)' }} /></div>
             <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--brown-800)', marginBottom: 10 }}>Cafe Owner / Admin</h3>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 24, flex: 1 }}>
               Configure your menu, manage category settings, control floor/table layouts, add employees, and track sales revenue.
@@ -197,7 +198,7 @@ export default function GetStartedPage() {
             boxShadow: 'var(--shadow-md)',
             alignItems: 'stretch'
           }}>
-            <div style={{ fontSize: 36, marginBottom: 16 }}>🖥️</div>
+            <div style={{ display: 'flex', marginBottom: 16 }}><Monitor size={36} style={{ color: 'var(--brown-600)' }} /></div>
             <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--brown-800)', marginBottom: 10 }}>Cashier & POS Staff</h3>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 24, flex: 1 }}>
               Access the rapid point-of-sale layout to process walk-in orders, manage sessions, handle billing, and apply discounts.
@@ -217,7 +218,7 @@ export default function GetStartedPage() {
             boxShadow: 'var(--shadow-md)',
             alignItems: 'stretch'
           }}>
-            <div style={{ fontSize: 36, marginBottom: 16 }}>🍳</div>
+            <div style={{ display: 'flex', marginBottom: 16 }}><ChefHat size={36} style={{ color: 'var(--brown-600)' }} /></div>
             <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--brown-800)', marginBottom: 10 }}>Kitchen Chef</h3>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 24, flex: 1 }}>
               View and update current culinary tickets, prioritize orders, and notify cashiers when items are ready.
@@ -237,7 +238,7 @@ export default function GetStartedPage() {
             boxShadow: 'var(--shadow-md)',
             alignItems: 'stretch'
           }}>
-            <div style={{ fontSize: 36, marginBottom: 16 }}>👥</div>
+            <div style={{ display: 'flex', marginBottom: 16 }}><Users size={36} style={{ color: 'var(--brown-600)' }} /></div>
             <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--brown-800)', marginBottom: 10 }}>Customer Portal</h3>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 24, flex: 1 }}>
               Check loyalty tiers, view accrued points balance, browse your transaction log, and see active promotion codes.

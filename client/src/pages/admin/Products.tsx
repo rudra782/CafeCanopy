@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { Edit2, Trash2 } from 'lucide-react';
 import { productsAPI, categoriesAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 
@@ -183,8 +184,8 @@ export default function ProductsPage() {
                   {p.tax > 0 && <span className="badge badge-info" style={{ marginLeft: 'auto' }}>{p.tax}% Tax</span>}
                 </div>
                 <div className="card-footer" style={{ display: 'flex', gap: 6 }}>
-                  <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => openEdit(p)}>✏️ Edit</button>
-                  <button className="btn btn-danger btn-sm btn-icon" onClick={() => handleDelete(p.id)} data-tooltip="Delete">🗑️</button>
+                  <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => openEdit(p)}>Edit</button>
+                  <button className="btn btn-danger btn-sm btn-icon" onClick={() => handleDelete(p.id)} data-tooltip="Delete"></button>
                 </div>
               </div>
             ))}
