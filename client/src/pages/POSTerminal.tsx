@@ -5,6 +5,8 @@ import { getSocket } from '../lib/socket';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart3, Coffee } from 'lucide-react';
 
 const formatCurrency = (n: number) => `₹${Number(n || 0).toFixed(2)}`;
 
@@ -250,7 +252,6 @@ export default function POSTerminal() {
       store.setSession(null);
       setShowSessionClose(false);
       toast.success('Session closed');
-      setShowSessionOpen(true);
     } catch (err: any) { toast.error(err.response?.data?.message || 'Failed to close session'); }
   };
 
@@ -262,11 +263,81 @@ export default function POSTerminal() {
 
   if (sessionLoading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'var(--cream-100)' }}><div className="spinner spinner-lg" /></div>;
 
+  // Session Summary Dialog
+  if (sessionStats && !store.currentSession) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--cream-100)', padding: 40 }}>
+      <div className="card" style={{ width: '100%', maxWidth: 600, padding: 32 }}>
+        <div style={{ textAlign: 'center', marginBottom: 24, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <BarChart3 size={48} style={{ color: 'var(--brown-600)', marginBottom: 8 }} />
+          <h2>Session Summary</h2>
+          <p style={{ color: 'var(--text-muted)' }}>Here is the summary of your closed shift</p>
+        </div>
+
+        <div className="grid-3 mb-6" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+          <div className="stat-card" style={{ flexDirection: 'column', alignItems: 'center', padding: 16 }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Orders</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--brown-800)', marginTop: 4 }}>{sessionStats.order_count || 0}</div>
+          </div>
+          <div className="stat-card" style={{ flexDirection: 'column', alignItems: 'center', padding: 16 }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Revenue</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--brown-800)', marginTop: 4 }}>{formatCurrency(sessionStats.total_revenue)}</div>
+          </div>
+          <div className="stat-card" style={{ flexDirection: 'column', alignItems: 'center', padding: 16 }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Discounts</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--brown-800)', marginTop: 4 }}>{formatCurrency(sessionStats.total_discounts)}</div>
+          </div>
+        </div>
+
+        {/* Visualisation Chart */}
+        {sessionStats.payment_breakdown && Object.keys(sessionStats.payment_breakdown).length > 0 && (
+          <div style={{ marginBottom: 24, background: 'var(--bg-card)', borderRadius: 16, padding: 20, border: '1px solid var(--border)' }}>
+            <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-secondary)', marginBottom: 16, textAlign: 'center' }}>Revenue by Payment Method</div>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 24 }}>
+              <div style={{ width: 160, height: 160 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={Object.entries(sessionStats.payment_breakdown).map(([name, amount]) => ({ name, amount: Number(amount) }))}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={45}
+                      outerRadius={70}
+                      dataKey="amount"
+                      paddingAngle={3}
+                    >
+                      {Object.entries(sessionStats.payment_breakdown).map((_, idx) => (
+                        <Cell key={idx} fill={['#C8A97A', '#A0784A', '#8A6340', '#6B4C2F'][idx % 4]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(v: any) => `₹${Number(v).toFixed(2)}`} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div style={{ flex: 1 }}>
+                {Object.entries(sessionStats.payment_breakdown).map(([name, amount], idx) => (
+                  <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: ['#C8A97A', '#A0784A', '#8A6340', '#6B4C2F'][idx % 4], flexShrink: 0 }} />
+                    <span style={{ fontSize: 13, flex: 1 }}>{name}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700 }}>{formatCurrency(Number(amount))}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <button className="btn btn-primary btn-full btn-xl" onClick={() => { setSessionStats(null); setClosingAmount(''); setShowSessionOpen(true); }}>
+          Acknowledge & Close
+        </button>
+      </div>
+    </div>
+  );
+
   // Session Open Dialog
   if (showSessionOpen && !store.currentSession) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'var(--cream-100)' }}>
-      <div className="card" style={{ width: 400, padding: 32, textAlign: 'center' }}>
-        <div style={{ fontSize: 64, marginBottom: 16 }}>☕</div>
+      <div className="card" style={{ width: 400, padding: 32, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Coffee size={64} style={{ color: 'var(--brown-600)', marginBottom: 16 }} />
         <h2 style={{ marginBottom: 8 }}>Open POS Session</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: 24, fontSize: 14 }}>Enter the opening cash amount to start your shift</p>
         <div className="form-group">

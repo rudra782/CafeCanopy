@@ -3,12 +3,15 @@ import { reportsAPI } from '../../lib/api';
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
 import { format, subDays } from 'date-fns';
+import { ShoppingBag, DollarSign, Receipt, Percent, TrendingUp, CreditCard, Award, User, ClipboardList } from 'lucide-react';
 
 const COLORS = ['#C8A97A', '#A0784A', '#8A6340', '#6B4C2F', '#4A3420', '#D4B896'];
 
-const KPICard = ({ icon, label, value, color }: any) => (
+const KPICard = ({ icon: Icon, label, value, color }: any) => (
   <div className="stat-card">
-    <div className={`stat-icon ${color}`} style={{ fontSize: 24 }}>{icon}</div>
+    <div className={`stat-icon ${color}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Icon size={22} strokeWidth={2.5} />
+    </div>
     <div className="stat-info">
       <div className="stat-label">{label}</div>
       <div className="stat-value">{value}</div>
@@ -72,17 +75,20 @@ export default function AdminDashboard() {
       <div className="page-content">
         {/* KPIs */}
         <div className="grid-4 mb-6">
-          <KPICard icon="📦" label="Total Orders" value={data?.kpis?.total_orders || 0} color="brown" />
-          <KPICard icon="💰" label="Revenue" value={fmt(data?.kpis?.revenue)} color="green" />
-          <KPICard icon="🧾" label="Avg. Order Value" value={fmt(data?.kpis?.avg_order_value)} color="blue" />
-          <KPICard icon="🎁" label="Total Discounts" value={fmt(data?.kpis?.total_discounts)} color="orange" />
+          <KPICard icon={ShoppingBag} label="Total Orders" value={data?.kpis?.total_orders || 0} color="brown" />
+          <KPICard icon={DollarSign} label="Revenue" value={fmt(data?.kpis?.revenue)} color="green" />
+          <KPICard icon={Receipt} label="Avg. Order Value" value={fmt(data?.kpis?.avg_order_value)} color="blue" />
+          <KPICard icon={Percent} label="Total Discounts" value={fmt(data?.kpis?.total_discounts)} color="orange" />
         </div>
 
         <div className="grid-2 mb-6">
           {/* Sales Trend */}
           <div className="card">
             <div className="card-header">
-              <div className="card-title">📈 Sales Trend</div>
+              <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <TrendingUp size={18} style={{ color: 'var(--brown-500)' }} />
+                <span>Sales Trend</span>
+              </div>
             </div>
             <div className="card-body" style={{ padding: '16px' }}>
               <ResponsiveContainer width="100%" height={220}>
@@ -106,7 +112,10 @@ export default function AdminDashboard() {
           {/* Payment Distribution */}
           <div className="card">
             <div className="card-header">
-              <div className="card-title">💳 Payment Methods</div>
+              <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <CreditCard size={18} style={{ color: 'var(--brown-500)' }} />
+                <span>Payment Methods</span>
+              </div>
             </div>
             <div className="card-body" style={{ padding: '16px', display: 'flex', gap: 24, alignItems: 'center' }}>
               <ResponsiveContainer width={180} height={180}>
@@ -136,7 +145,10 @@ export default function AdminDashboard() {
           {/* Top Products */}
           <div className="card">
             <div className="card-header">
-              <div className="card-title">🏆 Top Products</div>
+              <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Award size={18} style={{ color: 'var(--brown-500)' }} />
+                <span>Top Products</span>
+              </div>
             </div>
             <div className="card-body" style={{ padding: '16px' }}>
               <ResponsiveContainer width="100%" height={220}>
@@ -154,7 +166,10 @@ export default function AdminDashboard() {
           {/* Employee Performance */}
           <div className="card">
             <div className="card-header">
-              <div className="card-title">👤 Employee Performance</div>
+              <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <User size={18} style={{ color: 'var(--brown-500)' }} />
+                <span>Employee Performance</span>
+              </div>
             </div>
             <div className="card-body" style={{ padding: 0 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -185,7 +200,10 @@ export default function AdminDashboard() {
         {/* Recent Orders */}
         <div className="card">
           <div className="card-header">
-            <div className="card-title">🧾 Recent Orders</div>
+            <div className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <ClipboardList size={18} style={{ color: 'var(--brown-500)' }} />
+              <span>Recent Orders</span>
+            </div>
           </div>
           <div className="table-wrapper">
             <table>
