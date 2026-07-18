@@ -32,6 +32,7 @@
   padding: 10px 16px;
   font-weight: 800;
   transition: transform 180ms ease;
+  pointer-events: auto;
 }
 
 .skip-link:focus { transform: translateY(0); }

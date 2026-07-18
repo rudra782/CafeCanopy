@@ -4,11 +4,13 @@ import { useAuthStore } from '../store';
 import { authAPI } from '../lib/api';
 import CinematicExperience from '../components/home/CinematicExperience';
 import HomeNavigation from '../components/home/HomeNavigation';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import '../styles/cafe-home.css';
 
 export default function GetStartedPage() {
   const navigate = useNavigate();
   const { user, isAuthenticated, clearAuth } = useAuthStore();
+  const reducedMotion = useReducedMotion();
 
   const getPortalRedirectPath = () => {
     if (!isAuthenticated || !user) return '/login';
@@ -33,7 +35,10 @@ export default function GetStartedPage() {
   };
 
   const scrollToWorkflow = () => {
-    document.getElementById('workflow-preview')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('phase-one-proof')?.scrollIntoView({
+      behavior: reducedMotion ? 'auto' : 'smooth',
+      block: 'start',
+    });
   };
 
   return (
@@ -48,7 +53,7 @@ export default function GetStartedPage() {
         onSignOut={signOut}
         onWorkflow={scrollToWorkflow}
       />
-      <main id="home-main">
+      <main id="home-main" tabIndex={-1}>
         <CinematicExperience onEnter={enterCafeCanopy} onWorkflow={scrollToWorkflow} />
 
         <section id="phase-one-proof" className="home-phase-one-proof" aria-labelledby="phase-one-title">

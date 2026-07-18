@@ -1,4 +1,5 @@
 import { Suspense, useMemo, useRef } from 'react';
+import type { MutableRefObject } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
@@ -10,12 +11,12 @@ import CoffeeBeanField from './scene/CoffeeBeanField';
 import SteamParticles from './scene/SteamParticles';
 
 type StickySceneCanvasProps = {
-  motion: React.MutableRefObject<HeroMotionValues>;
+  motion: MutableRefObject<HeroMotionValues>;
   reducedMotion: boolean;
   webglSupported: boolean;
 };
 
-function SceneCamera({ motion }: { motion: React.MutableRefObject<HeroMotionValues> }) {
+function SceneCamera({ motion }: { motion: MutableRefObject<HeroMotionValues> }) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const target = useMemo(() => new THREE.Vector3(0, 0.1, 0), []);
 
@@ -29,7 +30,7 @@ function SceneCamera({ motion }: { motion: React.MutableRefObject<HeroMotionValu
   return <PerspectiveCamera ref={cameraRef} makeDefault fov={38} position={[0, 0.15, 5.2]} />;
 }
 
-function HomeScene({ motion, reducedMotion }: { motion: React.MutableRefObject<HeroMotionValues>; reducedMotion: boolean }) {
+function HomeScene({ motion, reducedMotion }: { motion: MutableRefObject<HeroMotionValues>; reducedMotion: boolean }) {
   const cupRef = useRef<THREE.Group>(null);
   const quality = useResponsiveQuality();
   const materials = useMemo(() => ({
@@ -83,6 +84,7 @@ export default function StickySceneCanvas({ motion, reducedMotion, webglSupporte
     <div className="hero-canvas" aria-hidden="true" data-webgl="supported">
       <Canvas
         dpr={quality.dpr}
+        frameloop={reducedMotion ? 'demand' : 'always'}
         shadows={!quality.isMobile}
         gl={{ antialias: true, alpha: true, powerPreference: quality.isMobile ? 'default' : 'high-performance' }}
       >

@@ -11,11 +11,11 @@ export type HeroMotionValues = {
 
 export const initialHeroMotion: HeroMotionValues = {
   cupX: 0,
-  cupY: 0.35,
+  cupY: 0,
   cupZ: 0,
-  cupScale: 0.92,
+  cupScale: 1,
   cupRotX: 0,
-  cupRotY: 0,
+  cupRotY: 0.14,
   cameraZ: 5.2,
   cameraX: 0,
 };
