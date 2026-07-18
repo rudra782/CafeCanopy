@@ -1,11 +1,26 @@
 import { Coffee } from 'lucide-react';
 
 type HomeNavigationProps = {
+  isAuthenticated: boolean;
+  userName?: string;
+  userRole?: string;
   onEnter: () => void;
+  onSignIn: () => void;
+  onRegister: () => void;
+  onSignOut: () => void;
   onWorkflow: () => void;
 };
 
-export default function HomeNavigation({ onEnter, onWorkflow }: HomeNavigationProps) {
+export default function HomeNavigation({
+  isAuthenticated,
+  userName,
+  userRole,
+  onEnter,
+  onSignIn,
+  onRegister,
+  onSignOut,
+  onWorkflow,
+}: HomeNavigationProps) {
   return (
     <header className="home-nav" aria-label="CafeCanopy homepage navigation">
       <a className="skip-link" href="#home-main">Skip to homepage content</a>
@@ -24,7 +39,21 @@ export default function HomeNavigation({ onEnter, onWorkflow }: HomeNavigationPr
           <a href="#phase-one-proof">About</a>
         </nav>
 
-        <button className="home-nav__cta" type="button" onClick={onEnter}>Enter App</button>
+        <div className="home-nav__actions" aria-label="Account actions">
+          {isAuthenticated ? (
+            <>
+              <span className="home-nav__user">{userName} <em>{userRole}</em></span>
+              <button className="home-nav__ghost" type="button" onClick={onSignOut}>Sign Out</button>
+              <button className="home-nav__cta" type="button" onClick={onEnter}>Workspace</button>
+            </>
+          ) : (
+            <>
+              <button className="home-nav__ghost" type="button" onClick={onSignIn}>Sign In</button>
+              <button className="home-nav__ghost home-nav__ghost--register" type="button" onClick={onRegister}>Register Cafe</button>
+              <button className="home-nav__cta" type="button" onClick={onEnter}>Enter App</button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

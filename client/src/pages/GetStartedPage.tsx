@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useAuthStore } from '../store';
+import { authAPI } from '../lib/api';
 import CinematicExperience from '../components/home/CinematicExperience';
 import HomeNavigation from '../components/home/HomeNavigation';
 import '../styles/cafe-home.css';
 
 export default function GetStartedPage() {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, clearAuth } = useAuthStore();
 
   const getPortalRedirectPath = () => {
     if (!isAuthenticated || !user) return '/login';
@@ -16,6 +18,19 @@ export default function GetStartedPage() {
   };
 
   const enterCafeCanopy = () => navigate(getPortalRedirectPath());
+  const signIn = () => navigate('/login');
+  const registerCafe = () => navigate('/register');
+
+  const signOut = async () => {
+    const refreshToken = localStorage.getItem('refreshToken') || '';
+    try {
+      await authAPI.logout(refreshToken);
+    } catch {
+      // Preserve the previous homepage behavior: local sign-out still succeeds if the network logout fails.
+    }
+    clearAuth();
+    toast.success('Signed out successfully');
+  };
 
   const scrollToWorkflow = () => {
     document.getElementById('workflow-preview')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -23,7 +38,16 @@ export default function GetStartedPage() {
 
   return (
     <div className="home-page">
-      <HomeNavigation onEnter={enterCafeCanopy} onWorkflow={scrollToWorkflow} />
+      <HomeNavigation
+        isAuthenticated={isAuthenticated}
+        userName={user?.name}
+        userRole={user?.role}
+        onEnter={enterCafeCanopy}
+        onSignIn={signIn}
+        onRegister={registerCafe}
+        onSignOut={signOut}
+        onWorkflow={scrollToWorkflow}
+      />
       <main id="home-main">
         <CinematicExperience onEnter={enterCafeCanopy} onWorkflow={scrollToWorkflow} />
 
