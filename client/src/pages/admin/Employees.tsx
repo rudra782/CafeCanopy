@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Edit2, Trash2, Tag, Award, Trophy } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Trash2, Award, Trophy } from 'lucide-react';
 import { employeesAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 

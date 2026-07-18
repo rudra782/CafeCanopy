@@ -23,7 +23,12 @@
     "react-to-print": "^3.3.0",
     "recharts": "^3.8.1",
     "socket.io-client": "^4.8.3",
-    "zustand": "^5.0.14"
+    "zustand": "^5.0.14",
+    "gsap": "^3.13.0",
+    "@gsap/react": "^2.1.2",
+    "three": "^0.181.2",
+    "@react-three/fiber": "^9.4.0",
+    "@react-three/drei": "^10.7.7"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

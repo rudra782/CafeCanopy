@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { sessionsAPI, ordersAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
@@ -23,7 +23,9 @@ export default function SessionsPage() {
     try {
       const { data } = await ordersAPI.getAll({ session_id: session.id, limit: 50 });
       setSessionOrders(data.data);
-    } catch {}
+    } catch {
+      // Preserve the previous behavior: keep the selected session visible if order lookup fails.
+    }
   };
 
   const fmt = (n: number) => `₹${Number(n || 0).toLocaleString()}`;
