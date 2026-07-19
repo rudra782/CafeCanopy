@@ -13,6 +13,7 @@
 .home-page {
   min-height: 100vh;
   overflow-x: clip;
+  max-width: 100vw;
   background: var(--cc-night);
   color: var(--cc-cream);
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -142,11 +143,22 @@
   isolation: isolate;
 }
 
+.scroll-scrub-video,
 .hero-canvas {
   position: absolute;
   inset: 0;
   z-index: -2;
   min-height: 100vh;
+}
+.scroll-scrub-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% center;
+  background: var(--cc-night) url('/assets/home/cafeCanopy-scroll-poster.jpg') 62% center / cover no-repeat;
+}
+.scroll-scrub-video--poster {
+  display: block;
 }
 .hero-canvas canvas { width: 100%; height: 100%; display: block; }
 .hero-canvas--loading {
@@ -169,18 +181,20 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: .34;
+  opacity: .24;
   background-image:
+    linear-gradient(90deg, rgba(6, 16, 12, .9) 0%, rgba(10, 16, 13, .72) 26%, rgba(10, 16, 13, .28) 48%, rgba(10, 16, 13, 0) 72%),
     linear-gradient(rgba(242,232,216,.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(242,232,216,.018) 1px, transparent 1px),
     linear-gradient(180deg, rgba(10,16,13,0) 0%, var(--cc-night) 96%);
-  background-size: 42px 42px, 42px 42px, 100% 100%;
+  background-size: 100% 100%, 42px 42px, 42px 42px, 100% 100%;
 }
 
 .cinematic-home__copy {
-  width: min(940px, calc(100vw - 40px));
-  text-align: center;
+  width: min(1180px, calc(100vw - 40px));
+  text-align: left;
   padding-top: 88px;
+  padding-right: min(44vw, 520px);
   will-change: transform, opacity;
 }
 
@@ -204,7 +218,7 @@
 
 .home-support {
   max-width: 610px;
-  margin: 28px auto 0;
+  margin: 28px 0 0;
   color: var(--cc-oat);
   font-size: clamp(1rem, 1.6vw, 1.15rem);
   line-height: 1.75;
@@ -212,7 +226,7 @@
 
 .home-mantra {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 10px;
   margin-top: 22px;
   color: rgba(242,232,216,.66);
@@ -222,7 +236,7 @@
 }
 
 .home-actions {
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: 14px;
   margin-top: 34px;
@@ -281,6 +295,8 @@
 @media (max-width: 1040px) {
   .home-nav__links { display: none; }
   .cinematic-home { min-height: 520vh; }
+  .scroll-scrub-video { object-position: 66% center; }
+  .cinematic-home__copy { padding-right: min(36vw, 360px); }
   .cinematic-home h1 { font-size: clamp(3.4rem, 11vw, 7rem); }
   .home-phase-one-proof { grid-template-columns: 1fr; }
 }
@@ -291,17 +307,20 @@
   .home-brand small { display: none; }
   .home-brand__mark { width: 36px; height: 36px; }
   .home-nav__cta { padding: 10px 12px; font-size: .82rem; }
-  .cinematic-home { min-height: 430vh; }
-  .cinematic-home__copy { width: calc(100vw - 28px); padding-top: 76px; }
+  .cinematic-home { min-height: 300vh; }
+  .scroll-scrub-video { object-position: 60% center; }
+  .cinematic-home__copy { width: calc(100vw - 28px); padding-top: 76px; padding-right: 0; text-align: center; }
   .cinematic-home h1 { font-size: clamp(3rem, 15vw, 5.2rem); }
-  .home-support { max-width: 330px; font-size: 1rem; line-height: 1.62; }
-  .home-mantra { gap: 7px; letter-spacing: .13em; }
+  .home-support { max-width: 330px; margin-left: auto; margin-right: auto; font-size: 1rem; line-height: 1.62; }
+  .home-mantra { justify-content: center; gap: 7px; letter-spacing: .13em; }
+  .home-actions { justify-content: center; }
   .home-button { width: 100%; max-width: 280px; }
   .phase-one-marker { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cinematic-home { min-height: auto; }
+  .scroll-scrub-video { object-position: 62% center; }
   .cinematic-home__sticky { position: relative; min-height: 100vh; }
   .cinematic-home__copy { will-change: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; }

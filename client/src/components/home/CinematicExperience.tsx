@@ -1,10 +1,11 @@
-import { lazy, Suspense, useRef } from 'react';
+import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useWebGLSupport } from '../../hooks/useWebGLSupport';
 import { initialHeroMotion, type HeroMotionValues } from '../../lib/homeMotion';
+import ScrollScrubVideo from './ScrollScrubVideo';
 
 const StickySceneCanvas = lazy(() => import('./StickySceneCanvas'));
 
@@ -22,6 +23,8 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
   const motion = useRef<HeroMotionValues>({ ...initialHeroMotion });
   const reducedMotion = useReducedMotion();
   const webglSupported = useWebGLSupport();
+  const [useSceneFallback, setUseSceneFallback] = useState(false);
+  const handleVideoError = useCallback(() => setUseSceneFallback(true), []);
 
   useGSAP(
     () => {
@@ -36,19 +39,19 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
         scrollTrigger: {
           trigger: rootRef.current,
           start: 'top top',
-          end: '+=3600',
+          end: () => (window.matchMedia('(max-width: 720px)').matches ? '+=1600' : '+=3600'),
           scrub: 1,
-          pin: stickyRef.current,
+          pin: () => !window.matchMedia('(max-width: 720px)').matches && stickyRef.current,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
       timeline
-        .fromTo(copyRef.current, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.16, ease: 'power2.out' }, 0)
+        .fromTo(copyRef.current, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.18, ease: 'power2.out' }, 0)
         .fromTo(motion.current, { cupY: 0.35, cupScale: 0.92, cupRotX: 0, cupRotY: 0, cupX: 0, cameraX: 0, cameraZ: 5.2 }, { cupY: 0, cupScale: 1, duration: 0.18, ease: 'expo.out' }, 0)
-        .to(motion.current, { cupRotY: Math.PI * 0.1, cupRotX: -0.08, cameraZ: 4.75, duration: 0.32 }, 0.18)
-        .to(copyRef.current, { autoAlpha: 0, y: -42, duration: 0.24, ease: 'power2.out' }, 0.58)
+        .to(motion.current, { cupRotY: Math.PI * 0.1, cupRotX: -0.08, cameraZ: 4.75, duration: 0.37 }, 0.18)
+        .to(copyRef.current, { autoAlpha: 0, y: -42, duration: 0.17, ease: 'power2.out' }, 0.55)
         .to(motion.current, { cupX: 1.35, cupRotY: Math.PI * 0.18, cameraX: -0.22, cameraZ: 4.55, duration: 0.28 }, 0.72);
 
       window.requestAnimationFrame(() => ScrollTrigger.refresh());
@@ -65,9 +68,18 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
       data-reduced-motion={reducedMotion ? 'true' : 'false'}
     >
       <div ref={stickyRef} className="cinematic-home__sticky">
-        <Suspense fallback={<div className="hero-canvas hero-canvas--loading" aria-hidden="true" />}>
-          <StickySceneCanvas motion={motion} reducedMotion={reducedMotion} webglSupported={webglSupported} />
-        </Suspense>
+        {useSceneFallback ? (
+          <Suspense fallback={<div className="hero-canvas hero-canvas--loading" aria-hidden="true" />}>
+            <StickySceneCanvas motion={motion} reducedMotion={reducedMotion} webglSupported={webglSupported} />
+          </Suspense>
+        ) : (
+          <ScrollScrubVideo
+            rootRef={rootRef}
+            stickyRef={stickyRef}
+            reducedMotion={reducedMotion}
+            onVideoError={handleVideoError}
+          />
+        )}
 
         <div className="cinematic-home__grain" aria-hidden="true" />
         <div ref={copyRef} className="cinematic-home__copy">
