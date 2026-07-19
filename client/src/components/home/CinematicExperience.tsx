@@ -41,7 +41,9 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
           start: 'top top',
           end: () => (window.matchMedia('(max-width: 720px)').matches ? '+=1600' : '+=3600'),
           scrub: 1,
-          pin: () => !window.matchMedia('(max-width: 720px)').matches && stickyRef.current,
+          pin: window.matchMedia('(max-width: 720px)').matches
+          ? false
+          : (stickyRef.current ?? false),
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
