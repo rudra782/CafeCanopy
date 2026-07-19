@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuthStore, usePOSStore } from '../store';
 import { productsAPI, categoriesAPI, sessionsAPI, ordersAPI, customersAPI, couponsAPI, tablesAPI, authAPI } from '../lib/api';
 import { getSocket } from '../lib/socket';
@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import { BarChart3, Coffee, ChefHat, Check, Search, Utensils, User, Trash2, ShoppingCart, Ticket, CreditCard, Smartphone, Users, AlertTriangle } from 'lucide-react';
+import { BarChart3, Coffee, Search, Utensils, ShoppingCart, CreditCard, Smartphone } from 'lucide-react';
 
 const formatCurrency = (n: number) => `₹${Number(n || 0).toFixed(2)}`;
 
@@ -17,7 +17,9 @@ export default function POSTerminal() {
 
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem('refreshToken') || '';
-    try { await authAPI.logout(refreshToken); } catch {}
+    try { await authAPI.logout(refreshToken); } catch {
+      // Preserve local logout if the network request fails.
+    }
     clearAuth();
     navigate('/login');
     toast.success('Logged out successfully');
@@ -37,9 +39,9 @@ export default function POSTerminal() {
   const [sessionLoading, setSessionLoading] = useState(true);
   const [openingAmount, setOpeningAmount] = useState('');
   const [showSessionOpen, setShowSessionOpen] = useState(false);
-  const [showSessionClose, setShowSessionClose] = useState(false);
+  const [, setShowSessionClose] = useState(false);
   const [sessionStats, setSessionStats] = useState<any>(null);
-  const [closingAmount, setClosingAmount] = useState('');
+  const [, setClosingAmount] = useState('');
 
   // UI State
   const [showCustomerModal, setShowCustomerModal] = useState(false);
@@ -60,7 +62,6 @@ export default function POSTerminal() {
 
   // Orders list
   const [showOrders, setShowOrders] = useState(false);
-  const [orders, setOrders] = useState<any[]>([]);
   const [orderStatus, setOrderStatus] = useState<string>('draft');
 
   // Load initial data
@@ -292,7 +293,7 @@ export default function POSTerminal() {
     } catch (err: any) { toast.error(err.response?.data?.message || 'Failed to close session'); }
   };
 
-  const recommendations = React.useMemo(() => {
+  const recommendations = useMemo(() => {
     if (!products.length) return [];
     const cartProductIds = new Set(store.cartItems.map(i => i.product_id));
     if (store.cartItems.length === 0) {

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Edit2, Trash2, Tag } from 'lucide-react';
-import { couponsAPI, promotionsAPI, productsAPI, categoriesAPI } from '../../lib/api';
+import { useEffect, useState } from 'react';
+import { Trash2 } from 'lucide-react';
+import { couponsAPI, promotionsAPI, productsAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 
 // ─── Coupons Tab ──────────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { reportsAPI } from '../../lib/api';
 import {
   Area,
@@ -27,7 +27,6 @@ import {
   ShoppingBag,
   Receipt,
   Utensils,
-  BarChart3,
   Clock,
   ClipboardList
 } from 'lucide-react';
@@ -125,7 +124,12 @@ export default function ReportsPage() {
                       <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#9B8878' }} />
                       <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#9B8878' }} tickFormatter={v => `₹${v}`} />
                       <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#9B8878' }} />
-                      <Tooltip formatter={(v: any, name: string) => [name === 'revenue' ? `₹${Number(v).toLocaleString()}` : v, name === 'revenue' ? 'Revenue' : 'Orders']} />
+                      <Tooltip formatter={(value: unknown, name?: unknown) => {
+                        const metricKey = String(name ?? '');
+                        const metricName = metricKey === 'revenue' ? 'Revenue' : 'Orders';
+                        const metricValue = metricKey === 'revenue' ? `₹${Number(value ?? 0).toLocaleString()}` : String(value ?? '');
+                        return [metricValue, metricName];
+                      }} />
                       <Legend wrapperStyle={{ fontSize: 12 }} />
                       <Area yAxisId="left" type="monotone" dataKey="revenue" name="revenue" stroke="#C8A97A" fill="url(#areaGrad)" strokeWidth={2} />
                       <Line yAxisId="right" type="monotone" dataKey="orders" name="orders" stroke="#A0784A" strokeWidth={2.5} activeDot={{ r: 6 }} />

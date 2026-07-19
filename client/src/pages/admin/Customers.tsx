@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { Edit2, Trash2, Tag } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { customersAPI } from '../../lib/api';
 import toast from 'react-hot-toast';
 

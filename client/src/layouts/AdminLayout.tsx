@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { LayoutDashboard, ShoppingBag, Tag, Grid, Users, User, CreditCard, Ticket, Clock, TrendingUp, Settings, LogOut, Monitor, ChefHat, Coffee } from 'lucide-react';
+import { useState } from 'react';
+import { LayoutDashboard, ShoppingBag, Tag, Grid, User, CreditCard, Ticket, Clock, TrendingUp, Settings, LogOut, Monitor, ChefHat, Coffee } from 'lucide-react';
 import { NavLink, useNavigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../store';
 import { authAPI } from '../lib/api';
@@ -25,7 +25,9 @@ export default function AdminLayout() {
 
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem('refreshToken') || '';
-    try { await authAPI.logout(refreshToken); } catch {}
+    try { await authAPI.logout(refreshToken); } catch {
+      // Preserve local logout if the network request fails.
+    }
     clearAuth();
     navigate('/login');
     toast.success('Logged out successfully');
