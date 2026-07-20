@@ -1,11 +1,11 @@
 import { Suspense, useMemo, useRef } from 'react';
 import type { MutableRefObject } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera } from '@react-three/drei';
+import { Environment, PerspectiveCamera, Shadow } from '@react-three/drei';
 import * as THREE from 'three';
 import { useResponsiveQuality } from '../../hooks/useResponsiveQuality';
 import type { HeroMotionValues } from '../../lib/homeMotion';
-import ProceduralCoffeeCup from './scene/ProceduralCoffeeCup';
+import RealisticCoffeeCup from './scene/RealisticCoffeeCup';
 import LightingRig from './scene/LightingRig';
 import CoffeeBeanField from './scene/CoffeeBeanField';
 import SteamParticles from './scene/SteamParticles';
@@ -33,11 +33,6 @@ function SceneCamera({ motion }: { motion: MutableRefObject<HeroMotionValues> })
 function HomeScene({ motion, reducedMotion }: { motion: MutableRefObject<HeroMotionValues>; reducedMotion: boolean }) {
   const cupRef = useRef<THREE.Group>(null);
   const quality = useResponsiveQuality();
-  const materials = useMemo(() => ({
-    ceramic: new THREE.MeshStandardMaterial({ color: '#F2E8D8', roughness: 0.62, metalness: 0.02 }),
-    coffee: new THREE.MeshStandardMaterial({ color: '#2A1711', roughness: 0.78, metalness: 0.0 }),
-    saucer: new THREE.MeshStandardMaterial({ color: '#D8C9B4', roughness: 0.7, metalness: 0.01 }),
-  }), []);
 
   useFrame(() => {
     if (!cupRef.current) return;
@@ -48,14 +43,20 @@ function HomeScene({ motion, reducedMotion }: { motion: MutableRefObject<HeroMot
 
   return (
     <>
-      <color attach="background" args={["#0A100D"]} />
+      <color attach="background" args={["#0B0A08"]} />
       <SceneCamera motion={motion} />
+      <Environment preset="apartment" environmentIntensity={0.24} />
       <LightingRig />
+      <mesh position={[0, -1.25, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <circleGeometry args={[1.85, 64]} />
+        <meshStandardMaterial color="#17110D" roughness={0.9} metalness={0} transparent opacity={0.74} />
+      </mesh>
+      <Shadow color="#000000" colorStop={0.46} opacity={0.28} scale={[2.7, 1.45, 1]} position={[0.08, -1.235, 0.04]} rotation={[-Math.PI / 2, 0, 0]} />
       <group ref={cupRef}>
-        <ProceduralCoffeeCup materials={materials} />
-        <SteamParticles count={quality.steamCount} reducedMotion={reducedMotion} />
+        <RealisticCoffeeCup receiveShadows={!quality.isMobile} />
+        <SteamParticles count={Math.min(quality.steamCount, 5)} reducedMotion={reducedMotion} />
       </group>
-      <CoffeeBeanField count={quality.beanCount} reducedMotion={reducedMotion} />
+      <CoffeeBeanField count={Math.min(quality.beanCount, quality.isMobile ? 4 : 8)} reducedMotion={reducedMotion} />
     </>
   );
 }
