@@ -5,14 +5,20 @@ import * as THREE from 'three';
 const COFFEE_CUP_MODEL_PATH = '/assets/models/coffee-cup/scene.gltf';
 
 type RealisticCoffeeCupProps = {
+  groundY: number;
   receiveShadows: boolean;
+  targetHeight: number;
 };
 
-function RealisticCoffeeCup({ receiveShadows }: RealisticCoffeeCupProps) {
+function RealisticCoffeeCup({ groundY, receiveShadows, targetHeight }: RealisticCoffeeCupProps) {
   const gltf = useGLTF(COFFEE_CUP_MODEL_PATH);
 
-  const cupScene = useMemo(() => {
+  const { cupScene, offset, scale } = useMemo(() => {
     const clone = gltf.scene.clone(true);
+    const bounds = new THREE.Box3().setFromObject(clone);
+    const size = bounds.getSize(new THREE.Vector3());
+    const center = bounds.getCenter(new THREE.Vector3());
+    const normalizedScale = targetHeight / Math.max(size.y, 1);
 
     clone.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
@@ -38,12 +44,20 @@ function RealisticCoffeeCup({ receiveShadows }: RealisticCoffeeCupProps) {
         : tuneMaterial(object.material);
     });
 
-    return clone;
-  }, [gltf.scene, receiveShadows]);
+    return {
+      cupScene: clone,
+      offset: new THREE.Vector3(
+        -center.x * normalizedScale,
+        groundY - bounds.min.y * normalizedScale,
+        -center.z * normalizedScale,
+      ),
+      scale: normalizedScale,
+    };
+  }, [gltf.scene, groundY, receiveShadows, targetHeight]);
 
   return (
-    <group position={[0, -0.56, 0]} rotation={[0, -0.34, 0]} scale={2.55}>
-      <primitive object={cupScene} />
+    <group rotation={[0, -0.34, 0]}>
+      <primitive object={cupScene} position={offset} scale={scale} />
     </group>
   );
 }

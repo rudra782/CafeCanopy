@@ -4,10 +4,11 @@ import * as THREE from 'three';
 
 type SteamParticlesProps = {
   count: number;
+  position?: [number, number, number];
   reducedMotion: boolean;
 };
 
-function SteamParticles({ count, reducedMotion }: SteamParticlesProps) {
+function SteamParticles({ count, position = [0, 0, 0], reducedMotion }: SteamParticlesProps) {
   const groupRef = useRef<THREE.Group>(null);
   const material = useMemo(() => new THREE.MeshBasicMaterial({
     color: '#F2E8D8',
@@ -36,7 +37,7 @@ function SteamParticles({ count, reducedMotion }: SteamParticlesProps) {
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} position={position}>
       {particles.map((particle) => (
         <mesh key={particle.phase} geometry={geometry} material={material} position={[particle.x, particle.y, particle.z]} />
       ))}

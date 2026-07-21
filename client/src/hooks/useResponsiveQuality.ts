@@ -20,7 +20,7 @@ function getQuality(): ResponsiveQuality {
 
   return {
     dpr,
-    beanCount: isMobile ? 4 : isTablet ? 6 : 9,
+    beanCount: isMobile ? 5 : isTablet ? 9 : 14,
     steamCount: isMobile ? 3 : 6,
     isTouch,
     isMobile,
