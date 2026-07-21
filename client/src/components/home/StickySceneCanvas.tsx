@@ -9,6 +9,7 @@ import RealisticCoffeeCup from './scene/RealisticCoffeeCup';
 import LightingRig from './scene/LightingRig';
 import CoffeeBeanField from './scene/CoffeeBeanField';
 import SteamParticles from './scene/SteamParticles';
+import ProceduralCoffeeCup from './scene/ProceduralCoffeeCup';
 
 type StickySceneCanvasProps = {
   motion: MutableRefObject<HeroMotionValues>;
@@ -28,6 +29,21 @@ function SceneCamera({ motion }: { motion: MutableRefObject<HeroMotionValues> })
   });
 
   return <PerspectiveCamera ref={cameraRef} makeDefault fov={38} position={[0, 0.15, 5.2]} />;
+}
+
+
+function LoadingCoffeeCup({ groundY }: { groundY: number }) {
+  const materials = useMemo(() => ({
+    ceramic: new THREE.MeshStandardMaterial({ color: '#F2E8D8', roughness: 0.64, metalness: 0.02 }),
+    coffee: new THREE.MeshStandardMaterial({ color: '#3B1E15', roughness: 0.78, metalness: 0 }),
+    saucer: new THREE.MeshStandardMaterial({ color: '#D8C9B4', roughness: 0.7, metalness: 0.01 }),
+  }), []);
+
+  return (
+    <group position={[0, groundY + 0.78, 0]} rotation={[0, -0.34, 0]} scale={1.01}>
+      <ProceduralCoffeeCup materials={materials} />
+    </group>
+  );
 }
 
 function HomeScene({ motion, reducedMotion }: { motion: MutableRefObject<HeroMotionValues>; reducedMotion: boolean }) {
@@ -52,7 +68,9 @@ function HomeScene({ motion, reducedMotion }: { motion: MutableRefObject<HeroMot
         <meshStandardMaterial color="#17110D" roughness={0.9} metalness={0} transparent opacity={0.74} />
       </mesh>
       <group ref={cupRef}>
-        <RealisticCoffeeCup groundY={-1.25} receiveShadows={!quality.isMobile} targetHeight={quality.isMobile ? 1.2 : quality.isTablet ? 1.36 : 1.45} />
+        <Suspense fallback={<LoadingCoffeeCup groundY={-1.25} />}>
+          <RealisticCoffeeCup groundY={-1.25} receiveShadows={!quality.isMobile} targetHeight={quality.isMobile ? 1.2 : quality.isTablet ? 1.36 : 1.45} />
+        </Suspense>
         <Shadow color="#000000" colorStop={0.46} opacity={0.26} scale={[1.72, 0.86, 1]} position={[0.03, -1.235, 0.04]} rotation={[-Math.PI / 2, 0, 0]} />
         <SteamParticles count={Math.min(quality.steamCount, 5)} reducedMotion={reducedMotion} position={[0, -0.36, 0.08]} />
       </group>
@@ -89,9 +107,7 @@ export default function StickySceneCanvas({ motion, reducedMotion, webglSupporte
         shadows={!quality.isMobile}
         gl={{ antialias: true, alpha: true, powerPreference: quality.isMobile ? 'default' : 'high-performance' }}
       >
-        <Suspense fallback={null}>
-          <HomeScene motion={motion} reducedMotion={reducedMotion} />
-        </Suspense>
+        <HomeScene motion={motion} reducedMotion={reducedMotion} />
       </Canvas>
     </div>
   );

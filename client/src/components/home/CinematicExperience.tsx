@@ -5,6 +5,8 @@ import { useGSAP } from '@gsap/react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useWebGLSupport } from '../../hooks/useWebGLSupport';
 import { initialHeroMotion, type HeroMotionValues } from '../../lib/homeMotion';
+import DashboardReveal from './DashboardReveal';
+import ProductRevealCopy from './ProductRevealCopy';
 
 const StickySceneCanvas = lazy(() => import('./StickySceneCanvas'));
 
@@ -20,18 +22,54 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
   const stickyRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<HTMLDivElement>(null);
+  const productStageRef = useRef<HTMLDivElement>(null);
+  const productCopyRef = useRef<HTMLDivElement>(null);
+  const dashboardRef = useRef<HTMLDivElement>(null);
   const motion = useRef<HeroMotionValues>({ ...initialHeroMotion });
   const reducedMotion = useReducedMotion();
   const webglSupported = useWebGLSupport();
 
   useGSAP(
     () => {
+      const viewportWidth = window.innerWidth;
+      const isMobile = viewportWidth <= 720;
+      const isTablet = viewportWidth > 720 && viewportWidth <= 1040;
+      const heroCup = isMobile
+        ? { cupX: 0.34, cupY: 0.14, cupScale: 0.58, cameraX: 0, cameraZ: 4.95 }
+        : isTablet
+          ? { cupX: 0.52, cupY: 0.15, cupScale: 0.62, cameraX: 0, cameraZ: 4.9 }
+          : { cupX: 0.72, cupY: 0.16, cupScale: 0.68, cameraX: 0, cameraZ: 4.85 };
+      const dashboardCup = isMobile
+        ? { cupX: 0.42, cupY: 0.26, cupScale: 0.34, cameraX: 0, cameraZ: 5.1 }
+        : isTablet
+          ? { cupX: 0.7, cupY: 0.28, cupScale: 0.4, cameraX: 0, cameraZ: 5.04 }
+          : { cupX: 0.96, cupY: 0.32, cupScale: 0.46, cameraX: 0, cameraZ: 5.0 };
+      const stableCup = isMobile
+        ? { cupX: 0.48, cupY: 0.3, cupScale: 0.28, cameraX: 0, cameraZ: 5.16 }
+        : isTablet
+          ? { cupX: 0.78, cupY: 0.34, cupScale: 0.34, cameraX: 0, cameraZ: 5.1 }
+          : { cupX: 1.08, cupY: 0.38, cupScale: 0.38, cameraX: 0, cameraZ: 5.08 };
       if (reducedMotion) {
         gsap.set(copyRef.current, { autoAlpha: 1, y: 0, pointerEvents: 'auto', clearProps: 'transform' });
         gsap.set(markerRef.current, { autoAlpha: 0 });
-        Object.assign(motion.current, { ...initialHeroMotion, cupY: 0, cupScale: 1, cupRotY: 0.14, beanScatter: 0 });
+        gsap.set([productStageRef.current, productCopyRef.current, dashboardRef.current], { autoAlpha: 1, clearProps: 'transform,filter' });
+        gsap.set(productStageRef.current, { pointerEvents: 'auto' });
+        Object.assign(motion.current, { ...initialHeroMotion, ...stableCup, cupRotY: Math.PI * 0.2, beanScatter: 1 });
         return;
       }
+
+      Object.assign(motion.current, {
+        ...initialHeroMotion,
+        cupX: 0,
+        cupY: 0,
+        cupZ: 0,
+        cupScale: 1,
+        cupRotX: 0,
+        cupRotY: 0.14,
+        cameraX: 0,
+        cameraZ: 5.2,
+        beanScatter: 0,
+      });
 
       const timeline = gsap.timeline({
         defaults: { ease: 'power3.inOut' },
@@ -48,13 +86,23 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
 
       gsap.set(copyRef.current, { autoAlpha: 0, y: 24, pointerEvents: 'none' });
       gsap.set(markerRef.current, { autoAlpha: 0 });
+      gsap.set(productStageRef.current, { autoAlpha: 0, pointerEvents: 'none' });
+      gsap.set(productCopyRef.current, { autoAlpha: 0, y: 34 });
+      gsap.set(dashboardRef.current, { autoAlpha: 0, y: 88, x: 44, scale: 0.9, rotateX: 8, rotateY: -7, filter: 'blur(14px)', transformPerspective: 1100, transformOrigin: '58% 54%' });
+      gsap.set('.dashboard-card, .dashboard-panel', { autoAlpha: 0, y: 18 });
 
       timeline
         .fromTo(motion.current, { cupY: 0, cupScale: 1, cupRotX: 0, cupRotY: 0.14, cupX: 0, cameraX: 0, cameraZ: 5.2, beanScatter: 0 }, { cupRotY: Math.PI * 0.08, cupRotX: -0.045, cameraZ: 4.9, duration: 0.18, ease: 'power2.inOut' }, 0.12)
         .to(motion.current, { beanScatter: 1, cupRotY: Math.PI * 0.12, cameraZ: 4.72, duration: 0.36, ease: 'power2.out' }, 0.12)
         .fromTo(copyRef.current, { autoAlpha: 0, y: 24, pointerEvents: 'none' }, { autoAlpha: 1, y: 0, pointerEvents: 'auto', duration: 0.16, ease: 'power2.out' }, 0.42)
-        .to(motion.current, { cupX: 1.35, cupRotY: Math.PI * 0.18, cupRotX: -0.08, cameraX: -0.22, cameraZ: 4.55, duration: 0.28 }, 0.55)
-        .to(copyRef.current, { autoAlpha: 0, y: -42, pointerEvents: 'none', duration: 0.24, ease: 'power2.out' }, 0.82);
+        .to(motion.current, { ...heroCup, cupRotY: Math.PI * 0.18, cupRotX: -0.08, duration: 0.28 }, 0.55)
+        .to(copyRef.current, { autoAlpha: 0, y: -42, pointerEvents: 'none', duration: 0.24, ease: 'power2.out' }, 0.82)
+        .to(motion.current, { ...dashboardCup, cupRotY: Math.PI * 0.22, duration: 0.34, ease: 'power2.inOut' }, 0.9)
+        .to(productStageRef.current, { autoAlpha: 1, pointerEvents: 'auto', duration: 0.06 }, 0.94)
+        .to(dashboardRef.current, { autoAlpha: 1, y: 0, x: 0, scale: 1, rotateX: 0, rotateY: 0, filter: 'blur(0px)', duration: 0.46, ease: 'power3.out' }, 1.02)
+        .to(productCopyRef.current, { autoAlpha: 1, y: 0, duration: 0.28, ease: 'power2.out' }, 1.18)
+        .to('.dashboard-card, .dashboard-panel', { autoAlpha: 1, y: 0, duration: 0.24, stagger: 0.035, ease: 'power2.out' }, 1.22)
+        .to(motion.current, { ...stableCup, cupRotX: -0.05, cupRotY: Math.PI * 0.2, duration: 0.34 }, 1.32);
 
       window.requestAnimationFrame(() => ScrollTrigger.refresh());
     },
@@ -86,6 +134,11 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
             <button className="home-button home-button--primary" type="button" onClick={onEnter}>Enter CafeCanopy</button>
             <button className="home-button home-button--ghost" type="button" onClick={onWorkflow}>See the workflow</button>
           </div>
+        </div>
+
+        <div ref={productStageRef} className="product-reveal-stage">
+          <div ref={productCopyRef}><ProductRevealCopy /></div>
+          <div ref={dashboardRef}><DashboardReveal /></div>
         </div>
 
         <div ref={markerRef} className="phase-one-marker" id="workflow-preview" aria-hidden="true">
