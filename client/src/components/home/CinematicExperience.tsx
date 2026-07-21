@@ -19,6 +19,7 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
   const rootRef = useRef<HTMLElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
+  const markerRef = useRef<HTMLDivElement>(null);
   const motion = useRef<HeroMotionValues>({ ...initialHeroMotion });
   const reducedMotion = useReducedMotion();
   const webglSupported = useWebGLSupport();
@@ -26,8 +27,9 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
   useGSAP(
     () => {
       if (reducedMotion) {
-        gsap.set(copyRef.current, { opacity: 1, y: 0, clearProps: 'transform' });
-        Object.assign(motion.current, { ...initialHeroMotion, cupY: 0, cupScale: 1, cupRotY: 0.14 });
+        gsap.set(copyRef.current, { autoAlpha: 1, y: 0, pointerEvents: 'auto', clearProps: 'transform' });
+        gsap.set(markerRef.current, { autoAlpha: 0 });
+        Object.assign(motion.current, { ...initialHeroMotion, cupY: 0, cupScale: 1, cupRotY: 0.14, beanScatter: 0 });
         return;
       }
 
@@ -44,12 +46,15 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
         },
       });
 
+      gsap.set(copyRef.current, { autoAlpha: 0, y: 24, pointerEvents: 'none' });
+      gsap.set(markerRef.current, { autoAlpha: 0 });
+
       timeline
-        .fromTo(copyRef.current, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.16, ease: 'power2.out' }, 0)
-        .fromTo(motion.current, { cupY: 0.35, cupScale: 0.92, cupRotX: 0, cupRotY: 0, cupX: 0, cameraX: 0, cameraZ: 5.2 }, { cupY: 0, cupScale: 1, duration: 0.18, ease: 'expo.out' }, 0)
-        .to(motion.current, { cupRotY: Math.PI * 0.1, cupRotX: -0.08, cameraZ: 4.75, duration: 0.32 }, 0.18)
-        .to(copyRef.current, { autoAlpha: 0, y: -42, duration: 0.24, ease: 'power2.out' }, 0.58)
-        .to(motion.current, { cupX: 1.35, cupRotY: Math.PI * 0.18, cameraX: -0.22, cameraZ: 4.55, duration: 0.28 }, 0.72);
+        .fromTo(motion.current, { cupY: 0, cupScale: 1, cupRotX: 0, cupRotY: 0.14, cupX: 0, cameraX: 0, cameraZ: 5.2, beanScatter: 0 }, { cupRotY: Math.PI * 0.08, cupRotX: -0.045, cameraZ: 4.9, duration: 0.18, ease: 'power2.inOut' }, 0.12)
+        .to(motion.current, { beanScatter: 1, cupRotY: Math.PI * 0.12, cameraZ: 4.72, duration: 0.36, ease: 'power2.out' }, 0.12)
+        .fromTo(copyRef.current, { autoAlpha: 0, y: 24, pointerEvents: 'none' }, { autoAlpha: 1, y: 0, pointerEvents: 'auto', duration: 0.16, ease: 'power2.out' }, 0.42)
+        .to(motion.current, { cupX: 1.35, cupRotY: Math.PI * 0.18, cupRotX: -0.08, cameraX: -0.22, cameraZ: 4.55, duration: 0.28 }, 0.55)
+        .to(copyRef.current, { autoAlpha: 0, y: -42, pointerEvents: 'none', duration: 0.24, ease: 'power2.out' }, 0.82);
 
       window.requestAnimationFrame(() => ScrollTrigger.refresh());
     },
@@ -83,7 +88,7 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
           </div>
         </div>
 
-        <div className="phase-one-marker" id="workflow-preview" aria-hidden="true">
+        <div ref={markerRef} className="phase-one-marker" id="workflow-preview" aria-hidden="true">
           <span>Phase 1 hero prepares the workflow reveal</span>
         </div>
       </div>

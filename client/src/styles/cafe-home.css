@@ -1,11 +1,11 @@
 :root {
-  --cc-night: #0A100D;
-  --cc-forest: #122019;
+  --cc-night: #1A120E;
+  --cc-forest: #100B08;
   --cc-espresso: #2A1711;
   --cc-roast: #9A6035;
   --cc-cream: #F2E8D8;
   --cc-oat: #D8C9B4;
-  --cc-sage: #8FB79B;
+  --cc-sage: #B8A58D;
   --cc-lime: #C9F27B;
   --cc-line: rgba(242,232,216,.14);
 }
@@ -55,7 +55,7 @@
   pointer-events: auto;
   border: 1px solid var(--cc-line);
   border-radius: 999px;
-  background: rgba(10, 16, 13, .56);
+  background: rgba(26, 18, 14, .64);
   backdrop-filter: blur(18px);
   box-shadow: 0 24px 60px rgba(42, 23, 17, .2);
   padding: 10px 12px 10px 18px;
@@ -127,9 +127,9 @@
   min-height: 650vh;
   position: relative;
   background:
-    radial-gradient(circle at 50% 35%, rgba(154,96,53,.22), transparent 42%),
-    radial-gradient(circle at 65% 30%, rgba(143,183,155,.16), transparent 45%),
-    linear-gradient(180deg, var(--cc-night), #07100c 74%, var(--cc-night));
+    radial-gradient(circle at 55% 38%, rgba(58,36,24,.44), transparent 42%),
+    radial-gradient(circle at 72% 25%, rgba(242,232,216,.09), transparent 42%),
+    linear-gradient(180deg, var(--cc-night), #100B08 76%, var(--cc-night));
 }
 
 .cinematic-home__sticky {
@@ -173,7 +173,7 @@
   background-image:
     linear-gradient(rgba(242,232,216,.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(242,232,216,.018) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(10,16,13,0) 0%, var(--cc-night) 96%);
+    linear-gradient(180deg, rgba(26,18,14,0) 0%, var(--cc-night) 96%);
   background-size: 42px 42px, 42px 42px, 100% 100%;
 }
 
@@ -181,6 +181,8 @@
   width: min(940px, calc(100vw - 40px));
   text-align: center;
   padding-top: 88px;
+  opacity: 0;
+  pointer-events: none;
   will-change: transform, opacity;
 }
 
@@ -244,6 +246,7 @@
 }
 
 .phase-one-marker {
+  opacity: 0;
   position: absolute;
   left: 50%;
   bottom: 26px;
@@ -297,7 +300,8 @@
   .home-support { max-width: 330px; font-size: 1rem; line-height: 1.62; }
   .home-mantra { gap: 7px; letter-spacing: .13em; }
   .home-button { width: 100%; max-width: 280px; }
-  .phase-one-marker { display: none; }
+  .phase-one-marker {
+  opacity: 0; display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
