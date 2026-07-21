@@ -181,6 +181,8 @@
   width: min(940px, calc(100vw - 40px));
   text-align: center;
   padding-top: 88px;
+  opacity: 0;
+  pointer-events: none;
   will-change: transform, opacity;
 }
 
@@ -244,6 +246,7 @@
 }
 
 .phase-one-marker {
+  opacity: 0;
   position: absolute;
   left: 50%;
   bottom: 26px;
@@ -297,7 +300,8 @@
   .home-support { max-width: 330px; font-size: 1rem; line-height: 1.62; }
   .home-mantra { gap: 7px; letter-spacing: .13em; }
   .home-button { width: 100%; max-width: 280px; }
-  .phase-one-marker { display: none; }
+  .phase-one-marker {
+  opacity: 0; display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -7,6 +7,7 @@ export type HeroMotionValues = {
   cupRotY: number;
   cameraZ: number;
   cameraX: number;
+  beanScatter: number;
 };
 
 export const initialHeroMotion: HeroMotionValues = {
@@ -18,4 +19,5 @@ export const initialHeroMotion: HeroMotionValues = {
   cupRotY: 0.14,
   cameraZ: 5.2,
   cameraX: 0,
+  beanScatter: 0,
 };

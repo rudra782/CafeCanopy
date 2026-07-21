@@ -52,11 +52,11 @@ function HomeScene({ motion, reducedMotion }: { motion: MutableRefObject<HeroMot
         <meshStandardMaterial color="#17110D" roughness={0.9} metalness={0} transparent opacity={0.74} />
       </mesh>
       <group ref={cupRef}>
-        <RealisticCoffeeCup groundY={-1.25} receiveShadows={!quality.isMobile} targetHeight={quality.isMobile ? 2.18 : 2.34} />
-        <Shadow color="#000000" colorStop={0.46} opacity={0.28} scale={[2.7, 1.45, 1]} position={[0.08, -1.235, 0.04]} rotation={[-Math.PI / 2, 0, 0]} />
-        <SteamParticles count={Math.min(quality.steamCount, 5)} reducedMotion={reducedMotion} position={[0, 0.68, 0.1]} />
+        <RealisticCoffeeCup groundY={-1.25} receiveShadows={!quality.isMobile} targetHeight={quality.isMobile ? 2.05 : 2.36} />
+        <Shadow color="#000000" colorStop={0.46} opacity={0.3} scale={[2.35, 1.18, 1]} position={[0.04, -1.235, 0.04]} rotation={[-Math.PI / 2, 0, 0]} />
+        <SteamParticles count={Math.min(quality.steamCount, 5)} reducedMotion={reducedMotion} position={[0, 0.16, 0.1]} />
       </group>
-      <CoffeeBeanField count={quality.beanCount} reducedMotion={reducedMotion} />
+      <CoffeeBeanField count={quality.beanCount} motion={motion} reducedMotion={reducedMotion} />
     </>
   );
 }

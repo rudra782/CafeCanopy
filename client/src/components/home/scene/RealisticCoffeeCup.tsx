@@ -18,7 +18,8 @@ function RealisticCoffeeCup({ groundY, receiveShadows, targetHeight }: Realistic
     const bounds = new THREE.Box3().setFromObject(clone);
     const size = bounds.getSize(new THREE.Vector3());
     const center = bounds.getCenter(new THREE.Vector3());
-    const normalizedScale = targetHeight / Math.max(size.y, 1);
+    const safeHeight = Math.max(size.y, 0.0001);
+    const normalizedScale = targetHeight / safeHeight;
 
     clone.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
