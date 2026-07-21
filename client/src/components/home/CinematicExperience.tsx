@@ -31,12 +31,30 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
 
   useGSAP(
     () => {
+      const viewportWidth = window.innerWidth;
+      const isMobile = viewportWidth <= 720;
+      const isTablet = viewportWidth > 720 && viewportWidth <= 1040;
+      const heroCup = isMobile
+        ? { cupX: 0.42, cupY: 0.12, cupScale: 0.74, cameraX: -0.02, cameraZ: 4.82 }
+        : isTablet
+          ? { cupX: 0.68, cupY: 0.12, cupScale: 0.8, cameraX: -0.03, cameraZ: 4.72 }
+          : { cupX: 0.9, cupY: 0.12, cupScale: 0.84, cameraX: -0.04, cameraZ: 4.65 };
+      const dashboardCup = isMobile
+        ? { cupX: 0.54, cupY: 0.2, cupScale: 0.62, cameraX: -0.02, cameraZ: 4.95 }
+        : isTablet
+          ? { cupX: 0.88, cupY: 0.18, cupScale: 0.7, cameraX: -0.04, cameraZ: 4.86 }
+          : { cupX: 1.18, cupY: 0.18, cupScale: 0.76, cameraX: -0.06, cameraZ: 4.78 };
+      const stableCup = isMobile
+        ? { cupX: 0.62, cupY: 0.22, cupScale: 0.56, cameraX: -0.03, cameraZ: 5.02 }
+        : isTablet
+          ? { cupX: 1.02, cupY: 0.2, cupScale: 0.64, cameraX: -0.05, cameraZ: 4.92 }
+          : { cupX: 1.38, cupY: 0.2, cupScale: 0.68, cameraX: -0.08, cameraZ: 4.85 };
       if (reducedMotion) {
         gsap.set(copyRef.current, { autoAlpha: 1, y: 0, pointerEvents: 'auto', clearProps: 'transform' });
         gsap.set(markerRef.current, { autoAlpha: 0 });
         gsap.set([productStageRef.current, productCopyRef.current, dashboardRef.current], { autoAlpha: 1, clearProps: 'transform,filter' });
         gsap.set(productStageRef.current, { pointerEvents: 'auto' });
-        Object.assign(motion.current, { ...initialHeroMotion, cupY: 0, cupScale: 0.72, cupRotY: Math.PI * 0.2, cupX: 1.55, cameraX: -0.24, cameraZ: 4.7, beanScatter: 1 });
+        Object.assign(motion.current, { ...initialHeroMotion, ...stableCup, cupRotY: Math.PI * 0.2, beanScatter: 1 });
         return;
       }
 
@@ -64,14 +82,14 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
         .fromTo(motion.current, { cupY: 0, cupScale: 1, cupRotX: 0, cupRotY: 0.14, cupX: 0, cameraX: 0, cameraZ: 5.2, beanScatter: 0 }, { cupRotY: Math.PI * 0.08, cupRotX: -0.045, cameraZ: 4.9, duration: 0.18, ease: 'power2.inOut' }, 0.12)
         .to(motion.current, { beanScatter: 1, cupRotY: Math.PI * 0.12, cameraZ: 4.72, duration: 0.36, ease: 'power2.out' }, 0.12)
         .fromTo(copyRef.current, { autoAlpha: 0, y: 24, pointerEvents: 'none' }, { autoAlpha: 1, y: 0, pointerEvents: 'auto', duration: 0.16, ease: 'power2.out' }, 0.42)
-        .to(motion.current, { cupX: 1.35, cupRotY: Math.PI * 0.18, cupRotX: -0.08, cameraX: -0.22, cameraZ: 4.55, duration: 0.28 }, 0.55)
+        .to(motion.current, { ...heroCup, cupRotY: Math.PI * 0.18, cupRotX: -0.08, duration: 0.28 }, 0.55)
         .to(copyRef.current, { autoAlpha: 0, y: -42, pointerEvents: 'none', duration: 0.24, ease: 'power2.out' }, 0.82)
-        .to(motion.current, { cupX: 1.85, cupScale: 0.74, cupRotY: Math.PI * 0.22, cameraX: -0.36, cameraZ: 4.82, duration: 0.34, ease: 'power2.inOut' }, 0.9)
+        .to(motion.current, { ...dashboardCup, cupRotY: Math.PI * 0.22, duration: 0.34, ease: 'power2.inOut' }, 0.9)
         .to(productStageRef.current, { autoAlpha: 1, pointerEvents: 'auto', duration: 0.06 }, 0.94)
         .to(dashboardRef.current, { autoAlpha: 1, y: 0, x: 0, scale: 1, rotateX: 0, rotateY: 0, filter: 'blur(0px)', duration: 0.46, ease: 'power3.out' }, 1.02)
         .to(productCopyRef.current, { autoAlpha: 1, y: 0, duration: 0.28, ease: 'power2.out' }, 1.18)
         .to('.dashboard-card, .dashboard-panel', { autoAlpha: 1, y: 0, duration: 0.24, stagger: 0.035, ease: 'power2.out' }, 1.22)
-        .to(motion.current, { cupX: 2.05, cupScale: 0.66, cupRotX: -0.05, cupRotY: Math.PI * 0.2, cameraX: -0.42, cameraZ: 4.9, duration: 0.34 }, 1.32);
+        .to(motion.current, { ...stableCup, cupRotX: -0.05, cupRotY: Math.PI * 0.2, duration: 0.34 }, 1.32);
 
       window.requestAnimationFrame(() => ScrollTrigger.refresh());
     },
