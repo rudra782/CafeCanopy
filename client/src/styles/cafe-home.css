@@ -1,6 +1,6 @@
 :root {
-  --cc-night: #0B0A08;
-  --cc-forest: #17110D;
+  --cc-night: #1A120E;
+  --cc-forest: #100B08;
   --cc-espresso: #2A1711;
   --cc-roast: #9A6035;
   --cc-cream: #F2E8D8;
@@ -55,7 +55,7 @@
   pointer-events: auto;
   border: 1px solid var(--cc-line);
   border-radius: 999px;
-  background: rgba(11, 10, 8, .62);
+  background: rgba(26, 18, 14, .64);
   backdrop-filter: blur(18px);
   box-shadow: 0 24px 60px rgba(42, 23, 17, .2);
   padding: 10px 12px 10px 18px;
@@ -127,9 +127,9 @@
   min-height: 650vh;
   position: relative;
   background:
-    radial-gradient(circle at 56% 36%, rgba(154,96,53,.24), transparent 40%),
-    radial-gradient(circle at 70% 26%, rgba(242,232,216,.08), transparent 42%),
-    linear-gradient(180deg, var(--cc-night), #120d0a 74%, var(--cc-night));
+    radial-gradient(circle at 55% 38%, rgba(58,36,24,.44), transparent 42%),
+    radial-gradient(circle at 72% 25%, rgba(242,232,216,.09), transparent 42%),
+    linear-gradient(180deg, var(--cc-night), #100B08 76%, var(--cc-night));
 }
 
 .cinematic-home__sticky {
@@ -173,7 +173,7 @@
   background-image:
     linear-gradient(rgba(242,232,216,.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(242,232,216,.018) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(11,10,8,0) 0%, var(--cc-night) 96%);
+    linear-gradient(180deg, rgba(26,18,14,0) 0%, var(--cc-night) 96%);
   background-size: 42px 42px, 42px 42px, 100% 100%;
 }
 

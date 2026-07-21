@@ -6,11 +6,12 @@ export type ResponsiveQuality = {
   steamCount: number;
   isTouch: boolean;
   isMobile: boolean;
+  isTablet: boolean;
 };
 
 function getQuality(): ResponsiveQuality {
   if (typeof window === 'undefined') {
-    return { dpr: 1, beanCount: 5, steamCount: 3, isTouch: false, isMobile: false };
+    return { dpr: 1, beanCount: 5, steamCount: 3, isTouch: false, isMobile: false, isTablet: false };
   }
 
   const isMobile = window.innerWidth < 720;
@@ -24,6 +25,7 @@ function getQuality(): ResponsiveQuality {
     steamCount: isMobile ? 3 : 6,
     isTouch,
     isMobile,
+    isTablet,
   };
 }
 

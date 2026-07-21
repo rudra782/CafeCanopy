@@ -33,13 +33,13 @@ const clamp01 = (value: number) => THREE.MathUtils.clamp(value, 0, 1);
 function CoffeeBeanField({ count, motion, reducedMotion }: CoffeeBeanFieldProps) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
-  const geometry = useMemo(() => new THREE.SphereGeometry(0.12, 18, 10), []);
+  const geometry = useMemo(() => new THREE.SphereGeometry(0.15, 18, 10), []);
   const material = useMemo(() => new THREE.MeshStandardMaterial({
-    color: '#7b482b',
-    roughness: 0.86,
-    metalness: 0.02,
+    color: '#9B5A32',
+    roughness: 0.82,
+    metalness: 0.01,
     transparent: true,
-    opacity: 0.46,
+    opacity: 0.74,
   }), []);
   const beans = useMemo(() => BEAN_LAYOUT.slice(0, count).map((bean, index) => ({
     ...bean,
