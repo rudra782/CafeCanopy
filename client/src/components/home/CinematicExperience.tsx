@@ -35,20 +35,20 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
       const isMobile = viewportWidth <= 720;
       const isTablet = viewportWidth > 720 && viewportWidth <= 1040;
       const heroCup = isMobile
-        ? { cupX: 0.42, cupY: 0.12, cupScale: 0.74, cameraX: -0.02, cameraZ: 4.82 }
+        ? { cupX: 0.34, cupY: 0.14, cupScale: 0.58, cameraX: 0, cameraZ: 4.95 }
         : isTablet
-          ? { cupX: 0.68, cupY: 0.12, cupScale: 0.8, cameraX: -0.03, cameraZ: 4.72 }
-          : { cupX: 0.9, cupY: 0.12, cupScale: 0.84, cameraX: -0.04, cameraZ: 4.65 };
+          ? { cupX: 0.52, cupY: 0.15, cupScale: 0.62, cameraX: 0, cameraZ: 4.9 }
+          : { cupX: 0.72, cupY: 0.16, cupScale: 0.68, cameraX: 0, cameraZ: 4.85 };
       const dashboardCup = isMobile
-        ? { cupX: 0.54, cupY: 0.2, cupScale: 0.62, cameraX: -0.02, cameraZ: 4.95 }
+        ? { cupX: 0.42, cupY: 0.26, cupScale: 0.34, cameraX: 0, cameraZ: 5.1 }
         : isTablet
-          ? { cupX: 0.88, cupY: 0.18, cupScale: 0.7, cameraX: -0.04, cameraZ: 4.86 }
-          : { cupX: 1.18, cupY: 0.18, cupScale: 0.76, cameraX: -0.06, cameraZ: 4.78 };
+          ? { cupX: 0.7, cupY: 0.28, cupScale: 0.4, cameraX: 0, cameraZ: 5.04 }
+          : { cupX: 0.96, cupY: 0.32, cupScale: 0.46, cameraX: 0, cameraZ: 5.0 };
       const stableCup = isMobile
-        ? { cupX: 0.62, cupY: 0.22, cupScale: 0.56, cameraX: -0.03, cameraZ: 5.02 }
+        ? { cupX: 0.48, cupY: 0.3, cupScale: 0.28, cameraX: 0, cameraZ: 5.16 }
         : isTablet
-          ? { cupX: 1.02, cupY: 0.2, cupScale: 0.64, cameraX: -0.05, cameraZ: 4.92 }
-          : { cupX: 1.38, cupY: 0.2, cupScale: 0.68, cameraX: -0.08, cameraZ: 4.85 };
+          ? { cupX: 0.78, cupY: 0.34, cupScale: 0.34, cameraX: 0, cameraZ: 5.1 }
+          : { cupX: 1.08, cupY: 0.38, cupScale: 0.38, cameraX: 0, cameraZ: 5.08 };
       if (reducedMotion) {
         gsap.set(copyRef.current, { autoAlpha: 1, y: 0, pointerEvents: 'auto', clearProps: 'transform' });
         gsap.set(markerRef.current, { autoAlpha: 0 });
@@ -57,6 +57,19 @@ export default function CinematicExperience({ onEnter, onWorkflow }: CinematicEx
         Object.assign(motion.current, { ...initialHeroMotion, ...stableCup, cupRotY: Math.PI * 0.2, beanScatter: 1 });
         return;
       }
+
+      Object.assign(motion.current, {
+        ...initialHeroMotion,
+        cupX: 0,
+        cupY: 0,
+        cupZ: 0,
+        cupScale: 1,
+        cupRotX: 0,
+        cupRotY: 0.14,
+        cameraX: 0,
+        cameraZ: 5.2,
+        beanScatter: 0,
+      });
 
       const timeline = gsap.timeline({
         defaults: { ease: 'power3.inOut' },
