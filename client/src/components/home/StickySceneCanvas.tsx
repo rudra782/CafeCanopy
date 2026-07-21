@@ -52,7 +52,7 @@ function HomeScene({ motion, reducedMotion }: { motion: MutableRefObject<HeroMot
         <meshStandardMaterial color="#17110D" roughness={0.9} metalness={0} transparent opacity={0.74} />
       </mesh>
       <group ref={cupRef}>
-        <RealisticCoffeeCup groundY={-1.25} receiveShadows={!quality.isMobile} targetHeight={quality.isMobile ? 1.28 : quality.isTablet ? 1.45 : 1.55} />
+        <RealisticCoffeeCup groundY={-1.25} receiveShadows={!quality.isMobile} targetHeight={quality.isMobile ? 1.2 : quality.isTablet ? 1.36 : 1.45} />
         <Shadow color="#000000" colorStop={0.46} opacity={0.26} scale={[1.72, 0.86, 1]} position={[0.03, -1.235, 0.04]} rotation={[-Math.PI / 2, 0, 0]} />
         <SteamParticles count={Math.min(quality.steamCount, 5)} reducedMotion={reducedMotion} position={[0, -0.36, 0.08]} />
       </group>
